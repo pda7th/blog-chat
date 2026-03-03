@@ -13,7 +13,7 @@ const viewportMetaContent = `width=${viewport.width}, initial-scale=${viewport.i
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="ko">
       <head>
         <title>pda</title>
         <link rel="icon" href="/favicon.ico" />
