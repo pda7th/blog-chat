@@ -43,6 +43,7 @@ button {
   border: none;
   background: none;
   font: inherit;
+  cursor: pointer;
 }
 
 .children-container {
@@ -51,3 +52,11 @@ button {
 }
 
 /* fonts */
+.fonts-navBar {
+  color: #495057;
+  font-family: 'Noto Sans KR';
+  font-size: 0.9375rem;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 1.40625rem; /* 150% */
+}
