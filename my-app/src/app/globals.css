@@ -1,0 +1,62 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap');
+
+@import 'tailwindcss/preflight';
+@import 'tailwindcss/utilities';
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  font-family: 'Noto Sans KR';
+}
+
+body {
+  width: 100%;
+  min-width: 1024px;
+  height: 100dvh;
+  margin: 0 auto;
+  background-color: white;
+  -ms-overflow-style: none;
+  position: relative;
+  box-shadow: 0 5px 20px 0 rgba(0, 0, 0, 0.1);
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+input {
+  outline: none;
+}
+
+textarea {
+  outline: none;
+  resize: none;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+button {
+  border: none;
+  background: none;
+  font: inherit;
+  cursor: pointer;
+}
+
+.children-container {
+  height: calc(100% - 67px);
+  overflow: scroll;
+}
+
+/* fonts */
+.fonts-navBar {
+  color: #495057;
+  font-family: 'Noto Sans KR';
+  font-size: 0.9375rem;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 1.40625rem; /* 150% */
+}
