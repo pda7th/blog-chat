@@ -13,6 +13,7 @@
     "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1001.0",
     "better-auth": "^1.5.2",
     "drizzle-orm": "^0.45.1",
     "mysql2": "^3.18.2",
