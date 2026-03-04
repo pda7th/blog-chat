@@ -1,6 +1,6 @@
 import { relations } from 'drizzle-orm';
 import { user, session, account } from './auth';
-import { post, postLikes, comment } from './blog';
+import { post, postLikes, comment } from './post';
 import { room, chat, roomParticipant } from './chat';
 
 export const userRelations = relations(user, ({ many }) => ({
