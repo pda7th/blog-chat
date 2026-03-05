@@ -52,7 +52,7 @@ export default function PostDetailPage() {
       <button onClick={() => router.back()} className="self-start text-sm text-gray-400 hover:text-gray-600">
         ← 목록으로
       </button>
-      <article className="flex w-796pxr flex-col gap-20pxr rounded-lg border border-[#E9ECEF] bg-white p-32pxr">
+      <article className="flex w-full flex-col gap-20pxr rounded-lg border border-[#E9ECEF] bg-white p-32pxr">
         <div className="flex items-center justify-between">
           <p className="fonts-postSubtitle">{post.category}</p>
           <div className="flex gap-8pxr">

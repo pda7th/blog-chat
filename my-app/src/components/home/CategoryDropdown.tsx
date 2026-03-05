@@ -33,7 +33,7 @@ export default function CategoryDropdown({ value, onChange }: Props) {
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="inline-flex items-center gap-8pxr rounded border border-zinc-200 bg-white px-16pxr py-8pxr"
+        className="inline-flex items-center gap-8pxr rounded border border-zinc-200 bg-white px-12pxr py-6pxr"
         aria-haspopup="listbox"
         aria-expanded={open}>
         <span className="fonts-categoryBadge">{value}</span>

@@ -19,7 +19,7 @@ export default function NavBar() {
   };
 
   return (
-    <nav className="flex items-center gap-12pxr border-b border-gray-100 bg-white py-35pxr">
+    <nav className="flex items-center gap-18pxr border-b border-gray-100 bg-white py-35pxr">
       <div className="flex shrink-0 items-center gap-4pxr">
         <span className="fonts-logo tracking-tight text-green-500">싹심기</span>
         <span>🌱</span>
@@ -41,10 +41,7 @@ export default function NavBar() {
           </div>
         </section>
 
-        <section className="flex shrink-0 items-center gap-12pxr">
-          <button className="fonts-navBar rounded-full border border-green-400 px-4 py-8pxr text-green-500 transition-colors hover:bg-green-50">
-            오늘 출석전
-          </button>
+        <section className="flex shrink-0 items-center">
           <div className="fonts-navBar flex h-36pxr w-36pxr items-center justify-center rounded-full bg-green-500 text-white">
             {initial}
           </div>

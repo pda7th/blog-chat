@@ -63,7 +63,7 @@ export default function PostEditor() {
   };
 
   return (
-    <section className="w-796pxr rounded-2xl border border-gray-200 bg-white shadow-[0px_4px_6px_-4px_rgba(0,0,0,0.10)]">
+    <section className="flex w-full flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-[0px_4px_6px_-4px_rgba(0,0,0,0.10)]">
       <header className="flex flex-col gap-12pxr border-b border-gray-100 bg-gray-50 p-32pxr">
         {/* 템플릿 버튼 */}
         <div className="flex items-center gap-8pxr">
@@ -77,6 +77,7 @@ export default function PostEditor() {
             className={`rounded px-12pxr py-6pxr transition-colors ${activeTemplate === '회고' ? 'bg-emerald-500' : 'border border-gray-200 bg-white hover:border-emerald-400'}`}>
             <span className={activeTemplate === '회고' ? 'fonts-chipActive' : 'fonts-chipInactive'}>회고 템플릿</span>
           </button>
+          <CategoryDropdown value={category} onChange={setCategory} />
         </div>
 
         <input
@@ -85,8 +86,6 @@ export default function PostEditor() {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
         />
-
-        <CategoryDropdown value={category} onChange={setCategory} />
       </header>
 
       {/* 툴바 */}
@@ -181,7 +180,7 @@ export default function PostEditor() {
       </div>
 
       {/* 에디터 본문 */}
-      <div className="p-40pxr">
+      <div className="flex-1 overflow-y-auto px-40pxr pb-40pxr pt-24pxr">
         <EditorContent editor={editor} />
       </div>
 

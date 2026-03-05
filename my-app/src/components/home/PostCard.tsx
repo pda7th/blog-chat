@@ -3,7 +3,7 @@ import { PostCardProps } from '@/types/PostCard.types';
 
 export default function PostCard({ subtitle, title, content, commentCount, likeCount }: PostCardProps) {
   return (
-    <article className="flex w-796pxr flex-col gap-13pxr rounded-lg border border-[#E9ECEF] bg-white p-25pxr">
+    <article className="flex w-full flex-col gap-13pxr rounded-lg border border-[#E9ECEF] bg-white p-25pxr">
       <p className="fonts-postSubtitle">{subtitle}</p>
 
       <h2 className="fonts-postTitle">{title}</h2>
