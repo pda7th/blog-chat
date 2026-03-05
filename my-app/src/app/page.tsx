@@ -12,7 +12,7 @@ export default function Page() {
     }, 3000); // 3초 후에 로그인 페이지로 이동
 
     return () => clearTimeout(timer);
-  }, []);
+  }, [router]);
 
   return (
     <main className="relative flex h-full w-full flex-col items-center pt-72">
