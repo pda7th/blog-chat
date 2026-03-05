@@ -24,7 +24,7 @@ export default function PostEditor() {
     if (!title.trim() || !content.trim()) return;
     setIsSubmitting(true);
     try {
-      await createPost({ title, content, category, image1 });
+      await createPost({ title, content, category, image1, image2, image3 });
       router.push('/home');
     } catch (err) {
       console.error(err);

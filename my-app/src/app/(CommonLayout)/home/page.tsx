@@ -1,22 +1,44 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import MainBtn from '@/components/common/MainBtn';
 import PostCard from '@/components/home/PostCard';
-import PostEditor from '@/components/home/PostEditor';
+import { fetchPosts, type PostSummary } from '@/lib/post';
+import { type PostCategory } from '@/lib/constants';
 
-export default function page() {
+export default function HomePage() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const category = (searchParams.get('category') ?? '전체') as PostCategory;
+  const [posts, setPosts] = useState<PostSummary[]>([]);
+
+  useEffect(() => {
+    fetchPosts({ category })
+      .then((data) => setPosts(data.items))
+      .catch(console.error);
+  }, [category]); // category 바뀔 때마다 재조회
+
   return (
     <main className="flex flex-col gap-32pxr p-32pxr">
       <article className="flex w-796pxr items-center justify-between self-stretch rounded-lg border border-dashed border-[#00C471] bg-[rgba(234,251,242,0.30)] p-20pxr">
         🌱 오늘 배운 지식을 기록하고 공유해보세요.
-        <MainBtn className="text-white">글쓰기</MainBtn>
+        <MainBtn className="text-white" onClick={() => router.push('/write')}>
+          글쓰기
+        </MainBtn>
       </article>
-      <PostCard
-        subtitle="React"
-        title="Next.js에서 SSR 이해하기"
-        content="Next.js에서는 서버에서 HTML을 먼저 렌더링할 수 있다..."
-        commentCount={12}
-        likeCount={34}
-      />
-      <PostEditor />
+
+      {posts.map((post) => (
+        <div key={post.postId} onClick={() => router.push(`/home/${post.postId}`)} className="cursor-pointer">
+          <PostCard
+            subtitle={post.category}
+            title={post.title}
+            content={post.content}
+            commentCount={post.commentCount}
+            likeCount={post.likeCount}
+          />
+        </div>
+      ))}
     </main>
   );
 }

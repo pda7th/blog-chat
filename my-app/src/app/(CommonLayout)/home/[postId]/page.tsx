@@ -1,0 +1,88 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import { useParams, useRouter } from 'next/navigation';
+import { fetchPost, deletePost, type PostDetail } from '@/lib/post';
+import { CommentIcon, LikeIcon } from '../../../../../public/icon/index';
+
+export default function PostDetailPage() {
+  const { postId } = useParams();
+  const router = useRouter();
+  const [post, setPost] = useState<PostDetail | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  useEffect(() => {
+    fetchPost(Number(postId)).then(setPost).catch(console.error);
+  }, [postId]);
+
+  const handleDelete = async () => {
+    if (!confirm('게시글을 삭제하시겠습니까?')) return;
+    setIsDeleting(true);
+    try {
+      await deletePost(Number(postId));
+      router.push('/home');
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  if (!post) return <div className="p-32pxr text-gray-400">불러오는 중...</div>;
+
+  return (
+    <main className="flex flex-col gap-24pxr p-32pxr">
+      <button onClick={() => router.back()} className="self-start text-sm text-gray-400 hover:text-gray-600">
+        ← 목록으로
+      </button>
+      <article className="flex w-796pxr flex-col gap-20pxr rounded-lg border border-[#E9ECEF] bg-white p-32pxr">
+        <div className="flex items-center justify-between">
+          <p className="fonts-postSubtitle">{post.category}</p>
+          <div className="flex gap-8pxr">
+            <button
+              onClick={() => router.push(`/home/${postId}/edit`)}
+              className="rounded border border-gray-200 px-12pxr py-6pxr text-sm text-gray-600 hover:bg-gray-50">
+              수정
+            </button>
+            <button
+              onClick={handleDelete}
+              disabled={isDeleting}
+              className="rounded border border-red-200 px-12pxr py-6pxr text-sm text-red-500 hover:bg-red-50 disabled:opacity-50">
+              {isDeleting ? '삭제 중...' : '삭제'}
+            </button>
+          </div>
+        </div>
+
+        <h1 className="fonts-postTitle">{post.title}</h1>
+
+        <div className="flex items-center gap-8pxr text-sm text-gray-400">
+          <span>{post.authorNickname ?? post.authorName}</span>
+          <span>·</span>
+          <span>{new Date(post.createdAt).toLocaleDateString('ko-KR')}</span>
+        </div>
+
+        {(post.image1 || post.image2 || post.image3) && (
+          <div className="flex gap-8pxr">
+            {post.image1 && <img src={post.image1} alt="이미지1" className="h-48 w-48 rounded object-cover" />}
+            {post.image2 && <img src={post.image2} alt="이미지2" className="h-48 w-48 rounded object-cover" />}
+            {post.image3 && <img src={post.image3} alt="이미지3" className="h-48 w-48 rounded object-cover" />}
+          </div>
+        )}
+
+        <p className="fonts-postContent whitespace-pre-wrap">{post.content}</p>
+
+        {/* 좋아요/댓글 */}
+        <section className="flex gap-12pxr border-t border-gray-100 pt-16pxr">
+          <div className="flex items-center gap-4pxr">
+            <CommentIcon />
+            <p className="fonts-subTitle">{post.commentCount}</p>
+          </div>
+          <div className="flex items-center gap-4pxr">
+            <LikeIcon />
+            <p className="fonts-subTitle">{post.likeCount}</p>
+          </div>
+        </section>
+      </article>
+    </main>
+  );
+}
