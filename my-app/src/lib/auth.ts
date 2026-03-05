@@ -46,6 +46,37 @@ export const auth = betterAuth({
 
   plugins: [jwt()],
 
+  databaseHooks: {
+    user: {
+      create: {
+        before: async (user) => {
+          const defaultImage = 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png';
+          if (!user.image) {
+            user.image = defaultImage;
+          }
+          // 하위 호환성을 위해 기존 필드도 동일하게 설정
+          user.userProfileImageUrl = user.image;
+
+          // 닉네임이 없을 경우 이름으로 초기화
+          if (!user.nickname) {
+            user.nickname = user.name;
+          }
+
+          return { data: user };
+        }
+      },
+      update: {
+        before: async (user) => {
+          // image가 수정될 경우 userProfileImageUrl도 함께 동기화
+          if (user.image) {
+            user.userProfileImageUrl = user.image;
+          }
+          return { data: user };
+        }
+      }
+    }
+  },
+
   session: { expiresIn: 60 * 60 * 24 * 7, updateAge: 60 * 60 * 24 },
   trustedOrigins: [process.env.BETTER_AUTH_URL ?? 'http://localhost:3000'],
 });

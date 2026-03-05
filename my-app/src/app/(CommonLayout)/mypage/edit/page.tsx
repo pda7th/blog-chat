@@ -3,7 +3,8 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession, authClient } from '@/lib/auth-client';
-import ImageUpload from '@/components/common/ImageUpload/ImageUpload';
+import { PictureIcon } from '../../../../../public/icon';
+import { useRef } from 'react';
 
 export default function EditProfilePage() {
     const { data: session, isPending } = useSession();
@@ -18,7 +19,32 @@ export default function EditProfilePage() {
     const [confirmPassword, setConfirmPassword] = useState('');
 
     const [loading, setLoading] = useState(false);
+    const [uploading, setUploading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
+
+    const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        setUploading(true);
+        setError(null);
+        try {
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('folder', 'profiles');
+
+            const res = await fetch('/api/upload', { method: 'POST', body: formData });
+            const data = await res.json();
+
+            if (!res.ok) throw new Error(data.error || '업로드 실패');
+            setProfileImage(data.url);
+        } catch (err: any) {
+            setError(err.message || '이미지 업로드 중 오류가 발생했습니다.');
+        } finally {
+            setUploading(false);
+        }
+    };
 
     useEffect(() => {
         if (!isPending && !session) {
@@ -116,10 +142,36 @@ export default function EditProfilePage() {
                             <div className="flex flex-col items-start gap-4">
                                 <label className="text-sm font-bold text-[#666666] ml-1">프로필 이미지</label>
                                 <div className="flex items-center gap-8 w-full p-4 rounded-2xl bg-gray-50/50">
-                                    <ImageUpload
-                                        folder="profiles"
-                                        currentUrl={profileImage}
-                                        onUpload={(url) => setProfileImage(url)}
+                                    <div
+                                        className="relative group w-24 h-24 rounded-full overflow-hidden border-2 border-dashed border-gray-200 flex items-center justify-center bg-white cursor-pointer hover:border-[#00B461] transition-all"
+                                        onClick={() => fileInputRef.current?.click()}
+                                    >
+                                        {uploading ? (
+                                            <div className="flex flex-col items-center gap-1">
+                                                <div className="w-5 h-5 border-2 border-[#00B461] border-t-transparent rounded-full animate-spin" />
+                                                <span className="text-[10px] text-[#00B461] font-bold">UP</span>
+                                            </div>
+                                        ) : (
+                                            <>
+                                                {profileImage ? (
+                                                    <img src={profileImage} alt="Preview" className="w-full h-full object-cover" />
+                                                ) : (
+                                                    <div className="bg-gray-100 w-full h-full flex items-center justify-center">
+                                                        <PictureIcon />
+                                                    </div>
+                                                )}
+                                                <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                                    <PictureIcon />
+                                                </div>
+                                            </>
+                                        )}
+                                    </div>
+                                    <input
+                                        type="file"
+                                        ref={fileInputRef}
+                                        className="hidden"
+                                        accept="image/*"
+                                        onChange={handleFileChange}
                                     />
                                     <div className="text-xs text-[#999999] leading-relaxed">
                                         <p>• 1:1 비율의 이미지를 권장합니다.</p>
