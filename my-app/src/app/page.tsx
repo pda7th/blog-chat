@@ -7,12 +7,10 @@ export default function Page() {
   const router = useRouter();
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      router.push('/login');
-    }, 3000); // 3초 후에 로그인 페이지로 이동
-
-    return () => clearTimeout(timer);
+    // 컴포넌트가 마운트되자마자 바로 /home으로 이동
+    router.replace('/home');
   }, [router]);
+
 
   return (
     <main className="relative flex h-full w-full flex-col items-center pt-72">

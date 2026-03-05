@@ -49,9 +49,16 @@ export default function NavBar() {
           // 1. 로그인 상태인 경우: 로그아웃 버튼 + 프로필 이미지
           <>
             <LogoutButton />
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-green-500 text-sm font-bold text-white">
-              {initial}
-            </div>
+            <button
+              onClick={() => router.push('/mypage')}
+              className="relative h-9 w-9 shrink-0 overflow-hidden rounded-full border border-gray-100 bg-gray-50 transition-all hover:ring-2 hover:ring-green-400 active:scale-95"
+            >
+              <img
+                src={session.user.image || 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'}
+                alt="My Page"
+                className="h-full w-full object-cover"
+              />
+            </button>
           </>
         ) : (
           // 2. 로그인하지 않은 경우: 로그인 버튼 표시
