@@ -3,6 +3,7 @@
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useSession } from '@/lib/auth-client';
 import { CATEGORY_EMOJI, POST_CATEGORIES, type PostCategory } from '@/lib/constants';
+import LogoutButton from '@/components/auth/LogoutButton';
 import NavItem from './NavItem';
 
 export default function NavBar() {
@@ -24,7 +25,6 @@ export default function NavBar() {
         <span className="fonts-logo tracking-tight text-green-500">싹심기</span>
         <span>🌱</span>
       </div>
-
       <div className="flex min-w-0 flex-1 items-center justify-between">
         {/* 카테고리 영역 */}
         <section className="flex min-w-0 flex-1 items-center">
@@ -41,11 +41,26 @@ export default function NavBar() {
           </div>
         </section>
 
-        <section className="flex shrink-0 items-center">
-          <div className="fonts-navBar flex h-36pxr w-36pxr items-center justify-center rounded-full bg-green-500 text-white">
-            {initial}
-          </div>
-        </section>
+        <section className="flex shrink-0 items-center"></section>
+      </div>
+      {/* 우측: 출석 버튼 + 아바타 */}
+      <div className="flex min-w-[120px] items-center justify-end gap-3">
+        {session ? (
+          // 1. 로그인 상태인 경우: 로그아웃 버튼 + 프로필 이미지
+          <>
+            <LogoutButton />
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-green-500 text-sm font-bold text-white">
+              {initial}
+            </div>
+          </>
+        ) : (
+          // 2. 로그인하지 않은 경우: 로그인 버튼 표시
+          <button
+            onClick={() => router.push('/login')}
+            className="rounded-full border border-green-500 px-4 py-2 text-sm font-medium text-green-500 transition-colors hover:bg-green-50">
+            로그인
+          </button>
+        )}
       </div>
     </nav>
   );
