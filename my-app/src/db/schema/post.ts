@@ -56,6 +56,9 @@ export const comment = mysqlTable(
     parentId: bigint('parent_id', { mode: 'number', unsigned: true }).references(
       (): AnyMySqlColumn => comment.commentId,
     ),
+    replyToCommentId: bigint('reply_to_comment_id', { mode: 'number', unsigned: true }).references(
+      (): AnyMySqlColumn => comment.commentId,
+    ),
     content: varchar('content', { length: 1000 }).notNull(),
     ...auditColumns,
   },
@@ -63,5 +66,6 @@ export const comment = mysqlTable(
     userIdx: index('idx_comment_user_id').on(t.userId),
     postIdx: index('idx_comment_post_id').on(t.postId),
     parentIdx: index('idx_comment_parent_id').on(t.parentId),
+    replyToIdx: index('idx_comment_reply_to_comment_id').on(t.replyToCommentId),
   }),
 );
