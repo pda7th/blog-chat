@@ -1,5 +1,6 @@
 import MainBtn from '@/components/common/MainBtn';
 import PostCard from '@/components/home/PostCard';
+import PostEditor from '@/components/home/PostEditor';
 
 export default function page() {
   return (
@@ -15,6 +16,7 @@ export default function page() {
         commentCount={12}
         likeCount={34}
       />
+      <PostEditor />
     </main>
   );
 }
