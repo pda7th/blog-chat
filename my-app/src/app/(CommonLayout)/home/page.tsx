@@ -23,7 +23,9 @@ export default function HomePage() {
     <main className="flex flex-col gap-32pxr py-32pxr">
       <article className="flex w-796pxr items-center justify-between self-stretch rounded-lg border border-dashed border-[#00C471] bg-[rgba(234,251,242,0.30)] p-20pxr">
         🌱 오늘 배운 지식을 기록하고 공유해보세요.
-        <MainBtn className="text-white" onClick={() => router.push(`/write?category=${encodeURIComponent(category)}`)}>
+        <MainBtn
+          className="text-white"
+          onClick={() => router.push(`/home/write?category=${encodeURIComponent(category)}`)}>
           글쓰기
         </MainBtn>
       </article>
