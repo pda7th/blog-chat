@@ -1,9 +1,23 @@
-// import NavBar from '@components/common/NavBar/NavBar'; 이런식으로 메뉴 가져오기
+import { Suspense } from 'react';
+import NavBar from '@/components/common/NavBar/NavBar';
+import ChatSidebar from '@/components/chat/ChatSidebar';
 
 export default function CommonLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return <div className="children-container">{children}</div>;
+  return (
+    <>
+      <Suspense>
+        <NavBar />
+      </Suspense>
+      <div className="children-container flex">
+        <div className="flex-1 overflow-y-auto">{children}</div>
+        <Suspense>
+          <ChatSidebar />
+        </Suspense>
+      </div>
+    </>
+  );
 }
