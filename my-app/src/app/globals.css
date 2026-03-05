@@ -69,3 +69,34 @@
   line-height: 32px; /* 133.333% */
   letter-spacing: -0.6px;
 }
+
+.fonts-mainBtn {
+  text-align: center;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 20px; /* 142.857% */
+}
+
+.fonts-postTitle {
+  color: #212529;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 28px; /* 155.556% */
+}
+
+.fonts-postSubtitle {
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 16.5px; /* 150% */
+}
+
+.fonts-postContent {
+  color: #495057;
+  font-size: 13.9px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 22.75px; /* 163.669% */
+}
