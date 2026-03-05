@@ -29,7 +29,7 @@ export default function SignUpForm() {
             }, {
                 onSuccess: () => {
                     alert('회원가입 성공!');
-                    router.push('/login');
+                    router.push('/home');
                 },
                 onError: (ctx) => {
                     alert(ctx.error.message || '가입 실패');
