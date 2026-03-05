@@ -1,11 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { listReplies, ServiceError } from '@/features/comments/comment.service';
-import type { ApiCursorPaginationEnvelope } from '@/types/api-envelops';
+import type { ApiCursorPaginationEnvelope } from '@/types/api-envelopes';
 import type { CommentDto } from '@/features/comments/comment.dto';
 
 type Params = { params: Promise<{ commentId: string }> };
 
-export async function GET(req: NextRequest, { params }: Params): Promise<NextResponse<ApiCursorPaginationEnvelope<CommentDto>>> {
+export async function GET(
+  req: NextRequest,
+  { params }: Params,
+): Promise<NextResponse<ApiCursorPaginationEnvelope<CommentDto>>> {
   const { commentId: commentIdStr } = await params;
   const commentId = Number(commentIdStr);
   if (!Number.isInteger(commentId) || commentId <= 0) {

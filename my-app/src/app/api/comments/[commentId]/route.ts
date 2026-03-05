@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { editComment, removeComment, ServiceError } from '@/features/comments/comment.service';
-import type { ApiEnvelope } from '@/types/api-envelops';
+import type { ApiEnvelope } from '@/types/api-envelopes';
 
 type Params = { params: Promise<{ commentId: string }> };
 

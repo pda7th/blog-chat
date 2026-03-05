@@ -1,4 +1,5 @@
 import type { PostCategory } from '@/lib/constants';
+import type { ApiEnvelope, ApiPaginationEnvelope } from '@/types/api-envelopes';
 
 export type PostSummary = {
   postId: number;
@@ -21,12 +22,6 @@ export type PostDetail = PostSummary & {
   authorProfileImage: string | null;
 };
 
-export type PostListResponse = {
-  posts: PostSummary[];
-  page: number;
-  limit: number;
-};
-
 export type CreatePostInput = {
   title: string;
   content: string;
@@ -38,73 +33,59 @@ export type CreatePostInput = {
 
 export type UpdatePostInput = CreatePostInput;
 
-// 게시글 목록 조회
-export async function fetchPosts(params?: {
-  category?: PostCategory;
-  page?: number;
-  limit?: number;
-}): Promise<PostListResponse> {
+export async function fetchPosts(params?: { category?: PostCategory; page?: number; pageSize?: number }) {
   const query = new URLSearchParams();
   if (params?.category && params.category !== '전체') query.set('category', params.category);
   if (params?.page) query.set('page', String(params.page));
-  if (params?.limit) query.set('limit', String(params.limit));
+  if (params?.pageSize) query.set('pageSize', String(params.pageSize));
 
   const res = await fetch(`/api/posts?${query.toString()}`);
-  if (!res.ok) throw new Error('게시글 목록 조회 실패');
-  return res.json();
+  const json: ApiPaginationEnvelope<PostSummary> = await res.json();
+  if (!json.success) throw new Error(json.error.message);
+  return json.data;
 }
 
-// 게시글 상세 조회
-export async function fetchPost(postId: number): Promise<PostDetail> {
+export async function fetchPost(postId: number) {
   const res = await fetch(`/api/posts/${postId}`);
-  if (!res.ok) throw new Error('게시글 조회 실패');
-  return res.json();
+  const json: ApiEnvelope<PostDetail> = await res.json();
+  if (!json.success) throw new Error(json.error.message);
+  return json.data;
 }
 
-// 게시글 작성
-export async function createPost(input: CreatePostInput): Promise<{ postId: number }> {
+export async function createPost(input: CreatePostInput) {
   const res = await fetch('/api/posts', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(input),
   });
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({}));
-    throw new Error(err.message ?? '게시글 작성 실패');
-  }
-  return res.json();
+  const json: ApiEnvelope<{ postId: number }> = await res.json();
+  if (!json.success) throw new Error(json.error.message);
+  return json.data;
 }
 
-// 게시글 수정
-export async function updatePost(postId: number, input: UpdatePostInput): Promise<{ postId: number }> {
+export async function updatePost(postId: number, input: UpdatePostInput) {
   const res = await fetch(`/api/posts/${postId}`, {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(input),
   });
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({}));
-    throw new Error(err.message ?? '게시글 수정 실패');
-  }
-  return res.json();
+  const json: ApiEnvelope<{ postId: number }> = await res.json();
+  if (!json.success) throw new Error(json.error.message);
+  return json.data;
 }
 
-// 게시글 삭제
-export async function deletePost(postId: number): Promise<void> {
+export async function deletePost(postId: number) {
   const res = await fetch(`/api/posts/${postId}`, { method: 'DELETE' });
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({}));
-    throw new Error(err.message ?? '게시글 삭제 실패');
-  }
+  const json: ApiEnvelope<{ message: string }> = await res.json();
+  if (!json.success) throw new Error(json.error.message);
 }
 
-// 이미지 업로드 (FormData → 서버 → S3)
 export async function uploadPostImage(file: File, folder = 'posts'): Promise<string> {
   const formData = new FormData();
   formData.append('file', file);
   formData.append('folder', folder);
 
-  const res = await fetch('/api/posts/upload-image', {
+  const res = await fetch('/api/upload', {
     method: 'POST',
     body: formData,
   });

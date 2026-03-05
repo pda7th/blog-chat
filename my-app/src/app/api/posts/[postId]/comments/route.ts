@@ -1,12 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { createComment, listRootComments, ServiceError } from '@/features/comments/comment.service';
-import type { ApiEnvelope, ApiCursorPaginationEnvelope } from '@/types/api-envelops';
+import type { ApiEnvelope, ApiCursorPaginationEnvelope } from '@/types/api-envelopes';
 import type { CommentDto } from '@/features/comments/comment.dto';
 
 type Params = { params: Promise<{ postId: string }> };
 
-export async function GET(req: NextRequest, { params }: Params): Promise<NextResponse<ApiCursorPaginationEnvelope<CommentDto>>> {
+export async function GET(
+  req: NextRequest,
+  { params }: Params,
+): Promise<NextResponse<ApiCursorPaginationEnvelope<CommentDto>>> {
   const { postId: postIdStr } = await params;
   const postId = Number(postIdStr);
   if (!Number.isInteger(postId) || postId <= 0) {
@@ -49,7 +52,11 @@ export async function POST(req: NextRequest, { params }: Params): Promise<NextRe
     return NextResponse.json({ success: false, error: { message: 'content는 필수입니다.' } }, { status: 400 });
   }
 
-  const { content, parentId = null, replyToCommentId = null } = body as {
+  const {
+    content,
+    parentId = null,
+    replyToCommentId = null,
+  } = body as {
     content: string;
     parentId?: number | null;
     replyToCommentId?: number | null;
