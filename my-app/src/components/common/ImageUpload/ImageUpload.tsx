@@ -1,5 +1,6 @@
 'use client';
 
+import { PictureIcon } from '../../../../public/icon';
 import { useRef, useState } from 'react';
 
 type UploadFolder = 'profiles' | 'posts';
@@ -12,18 +13,14 @@ interface ImageUploadProps {
 
 export default function ImageUpload({ folder, onUpload, currentUrl }: ImageUploadProps) {
   const inputRef = useRef<HTMLInputElement>(null);
-  const [preview, setPreview] = useState<string | null>(currentUrl ?? null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  const isProfile = folder === 'profiles';
 
   const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
     setError(null);
-    setPreview(URL.createObjectURL(file));
     setLoading(true);
 
     try {
@@ -36,16 +33,15 @@ export default function ImageUpload({ folder, onUpload, currentUrl }: ImageUploa
 
       if (!res.ok) {
         setError(data.error ?? '업로드에 실패했습니다.');
-        setPreview(currentUrl ?? null);
         return;
       }
 
       onUpload(data.url);
     } catch {
       setError('업로드 중 오류가 발생했습니다.');
-      setPreview(currentUrl ?? null);
     } finally {
       setLoading(false);
+      e.target.value = '';
     }
   };
 
@@ -56,25 +52,13 @@ export default function ImageUpload({ folder, onUpload, currentUrl }: ImageUploa
         onClick={() => inputRef.current?.click()}
         disabled={loading}
         className={[
-          'relative overflow-hidden bg-gray-100 border-2 border-dashed border-gray-300 hover:border-green-400 transition-colors',
-          isProfile ? 'w-24 h-24 rounded-full' : 'w-full h-48 rounded-xl',
-          loading ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer',
-        ].join(' ')}
-      >
-        {preview ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={preview} alt="미리보기" className="w-full h-full object-cover" />
-        ) : (
-          <span className="text-gray-400 text-sm">{isProfile ? '프로필 사진' : '이미지 추가'}</span>
-        )}
-        {loading && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black/30">
-            <span className="text-white text-xs">업로드 중...</span>
-          </div>
-        )}
+          'rounded p-8pxr text-zinc-600 transition-colors hover:bg-gray-100',
+          loading ? 'cursor-not-allowed opacity-60' : 'cursor-pointer',
+        ].join(' ')}>
+        {loading ? <span className="text-xs text-gray-400">업로드 중...</span> : <PictureIcon />}
       </button>
 
-      {error && <p className="text-red-500 text-xs">{error}</p>}
+      {error && <p className="text-xs text-red-500">{error}</p>}
 
       <input
         ref={inputRef}
