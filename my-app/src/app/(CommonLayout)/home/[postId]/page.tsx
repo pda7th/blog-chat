@@ -2,17 +2,24 @@
 
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { fetchPost, deletePost, type PostDetail } from '@/lib/post';
-import { CommentIcon, LikeIcon } from '../../../../../public/icon/index';
+import { fetchPost, deletePost, toggleLike, type PostDetail } from '@/lib/post';
+import { CommentIcon, LikeStrokeIcon, LikeFilledIcon } from '../../../../../public/icon/index';
 
 export default function PostDetailPage() {
   const { postId } = useParams();
   const router = useRouter();
   const [post, setPost] = useState<PostDetail | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [liked, setLiked] = useState(false);
+  const [likeCount, setLikeCount] = useState(0);
 
   useEffect(() => {
-    fetchPost(Number(postId)).then(setPost).catch(console.error);
+    fetchPost(Number(postId))
+      .then((data) => {
+        setPost(data);
+        setLikeCount(data.likeCount);
+      })
+      .catch(console.error);
   }, [postId]);
 
   const handleDelete = async () => {
@@ -28,6 +35,16 @@ export default function PostDetailPage() {
     }
   };
 
+  const handleLike = async () => {
+    try {
+      const { liked: newLiked } = await toggleLike(Number(postId));
+      setLiked(newLiked);
+      setLikeCount((prev) => (newLiked ? prev + 1 : prev - 1));
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   if (!post) return <div className="p-32pxr text-gray-400">불러오는 중...</div>;
 
   return (
@@ -40,7 +57,7 @@ export default function PostDetailPage() {
           <p className="fonts-postSubtitle">{post.category}</p>
           <div className="flex gap-8pxr">
             <button
-              onClick={() => router.push(`/home/${postId}/edit`)}
+              onClick={() => router.push(`/posts/${postId}/edit`)}
               className="rounded border border-gray-200 px-12pxr py-6pxr text-sm text-gray-600 hover:bg-gray-50">
               수정
             </button>
@@ -75,12 +92,12 @@ export default function PostDetailPage() {
         <section className="flex gap-12pxr border-t border-gray-100 pt-16pxr">
           <div className="flex items-center gap-4pxr">
             <CommentIcon />
-            <p className="fonts-subTitle">{post.commentCount}</p>
+            <p className="fonts-subTitle">댓글 {post.commentCount}</p>
           </div>
-          <div className="flex items-center gap-4pxr">
-            <LikeIcon />
-            <p className="fonts-subTitle">{post.likeCount}</p>
-          </div>
+          <button onClick={handleLike} className="flex items-center gap-4pxr">
+            {liked ? <LikeFilledIcon /> : <LikeStrokeIcon />}
+            <p className="fonts-subTitle">좋아요 {likeCount}</p>
+          </button>
         </section>
       </article>
     </main>

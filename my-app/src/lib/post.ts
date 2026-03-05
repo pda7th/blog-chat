@@ -98,3 +98,10 @@ export async function uploadPostImage(file: File, folder = 'posts'): Promise<str
   const { url } = await res.json();
   return url;
 }
+
+export async function toggleLike(postId: number): Promise<{ liked: boolean }> {
+  const res = await fetch(`/api/posts/${postId}/like`, { method: 'POST' });
+  const json: ApiEnvelope<{ liked: boolean }> = await res.json();
+  if (!json.success) throw new Error(json.error.message);
+  return json.data;
+}
