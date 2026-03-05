@@ -3,6 +3,7 @@
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useSession } from '@/lib/auth-client';
 import { CATEGORY_EMOJI, POST_CATEGORIES, type PostCategory } from '@/lib/constants';
+import LogoutButton from '@/components/auth/LogoutButton';
 
 export default function NavBar() {
   const router = useRouter();
@@ -53,13 +54,25 @@ export default function NavBar() {
 
       {/* 우측: 출석 버튼 + 아바타 */}
       <div className="flex items-center gap-3 min-w-[120px] justify-end">
-        <button className="px-4 py-2 rounded-full border border-green-400 text-green-500 text-sm font-medium hover:bg-green-50 transition-colors whitespace-nowrap">
-          오늘 출석전
-        </button>
-        <div className="w-9 h-9 rounded-full bg-green-500 flex items-center justify-center text-white text-sm font-bold shrink-0">
-          {initial}
-        </div>
+        {session ? (
+          // 1. 로그인 상태인 경우: 로그아웃 버튼 + 프로필 이미지
+          <>
+            <LogoutButton />
+            <div className="w-9 h-9 rounded-full bg-green-500 flex items-center justify-center text-white text-sm font-bold shrink-0">
+              {initial}
+            </div>
+          </>
+        ) : (
+          // 2. 로그인하지 않은 경우: 로그인 버튼 표시
+          <button
+            onClick={() => router.push('/login')}
+            className="px-4 py-2 rounded-full border border-green-500 text-green-500 text-sm font-medium hover:bg-green-50 transition-colors"
+          >
+            로그인
+          </button>
+        )}
       </div>
+
     </nav>
   );
 }

@@ -32,12 +32,6 @@ export const auth = betterAuth({
         clientSecret: process.env.GITHUB_CLIENT_SECRET!,
       },
     }),
-    ...(process.env.KAKAO_CLIENT_ID && {
-      kakao: {
-        clientId: process.env.KAKAO_CLIENT_ID,
-        clientSecret: process.env.KAKAO_CLIENT_SECRET!,
-      },
-    }),
   },
 
   // 앱 전용 추가 필드 — 클라이언트 타입 추론 및 API 응답에 포함
