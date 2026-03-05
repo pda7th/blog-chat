@@ -1,0 +1,138 @@
+name: Deploy to EC2
+
+on:
+  push:
+    branches: [main]
+
+env:
+  DOCKER_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/blog-chat
+
+jobs:
+  deploy:
+    name: Build, Push, Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      # ────────────────────────────────────────────
+      # 1. 소스 체크아웃
+      # ────────────────────────────────────────────
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # ────────────────────────────────────────────
+      # 2. Docker Buildx 설정 (캐시 지원)
+      # ────────────────────────────────────────────
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # ────────────────────────────────────────────
+      # 3. DockerHub 로그인
+      # ────────────────────────────────────────────
+      - name: Login to DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # ────────────────────────────────────────────
+      # 4. App 이미지 빌드 & Push (runner target)
+      #    태그: latest, sha-<commit>
+      # ────────────────────────────────────────────
+      - name: Build and push app image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          target: runner
+          push: true
+          tags: |
+            ${{ env.DOCKER_IMAGE }}:latest
+            ${{ env.DOCKER_IMAGE }}:sha-${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      # ────────────────────────────────────────────
+      # 5. Migrate 이미지 빌드 & Push (migrate target)
+      #    deploy.sh에서 마이그레이션 one-off 실행에 사용
+      # ────────────────────────────────────────────
+      - name: Build and push migrate image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          target: migrate
+          push: true
+          tags: ${{ env.DOCKER_IMAGE }}:migrate
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      # ────────────────────────────────────────────
+      # 6. SSH Agent 설정
+      # ────────────────────────────────────────────
+      - name: Setup SSH Agent
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
+
+      - name: Add EC2 to known hosts
+        run: ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
+
+      # ────────────────────────────────────────────
+      # 7. Infra 파일 EC2 동기화 (rsync)
+      #    infra/prod/ → /srv/app/
+      #    scripts/deploy.sh → /srv/app/deploy.sh
+      # ────────────────────────────────────────────
+      - name: Sync infra files to EC2
+        run: |
+          rsync -avz \
+            infra/prod/docker-compose.prod.yml \
+            ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/srv/app/docker-compose.prod.yml
+
+          rsync -avz --delete \
+            infra/prod/nginx/ \
+            ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/srv/app/nginx/
+
+          rsync -avz \
+            scripts/deploy.sh \
+            ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/srv/app/deploy.sh
+
+      # ────────────────────────────────────────────
+      # 8. .env 파일 생성 → EC2 /srv/app/.env 에 업로드
+      #    (로컬에서 생성 후 scp, 레포에는 절대 커밋 금지)
+      # ────────────────────────────────────────────
+      - name: Create .env file
+        run: |
+          cat > .env.production << EOF
+          DOCKER_IMAGE=${{ env.DOCKER_IMAGE }}
+
+          # App
+          NODE_ENV=production
+          BETTER_AUTH_SECRET=${{ secrets.BETTER_AUTH_SECRET }}
+          BETTER_AUTH_URL=${{ secrets.BETTER_AUTH_URL }}
+
+          # Database (Docker 내부: mysql 호스트명 사용)
+          DATABASE_URL=${{ secrets.DATABASE_URL }}
+
+          # MySQL Container
+          MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }}
+          MYSQL_DATABASE=${{ secrets.MYSQL_DATABASE }}
+          MYSQL_USER=${{ secrets.MYSQL_USER }}
+          MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD }}
+
+          # AWS S3
+          AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION=${{ secrets.AWS_REGION }}
+          AWS_S3_BUCKET_NAME=${{ secrets.AWS_S3_BUCKET_NAME }}
+          EOF
+
+      - name: Upload .env to EC2
+        run: |
+          scp .env.production \
+            ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/srv/app/.env
+
+      # ────────────────────────────────────────────
+      # 9. deploy.sh 실행 (migrate → up -d)
+      # ────────────────────────────────────────────
+      - name: Deploy
+        run: |
+          ssh ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} \
+            "chmod +x /srv/app/deploy.sh && /srv/app/deploy.sh"
