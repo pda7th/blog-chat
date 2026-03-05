@@ -35,8 +35,9 @@ export const postLikesRelations = relations(postLikes, ({ one }) => ({
 export const commentRelations = relations(comment, ({ one, many }) => ({
   author: one(user, { fields: [comment.userId], references: [user.id] }),
   post: one(post, { fields: [comment.postId], references: [post.postId] }),
-  parent: one(comment, { fields: [comment.parentId], references: [comment.commentId] }),
-  children: many(comment),
+  parent: one(comment, { fields: [comment.parentId], references: [comment.commentId], relationName: 'parent_child' }),
+  children: many(comment, { relationName: 'parent_child' }),
+  replyTo: one(comment, { fields: [comment.replyToCommentId], references: [comment.commentId], relationName: 'reply_to' }),
 }));
 
 export const roomRelations = relations(room, ({ many }) => ({
