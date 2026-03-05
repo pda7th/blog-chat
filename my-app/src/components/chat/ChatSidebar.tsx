@@ -1,20 +1,14 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useSearchParams } from 'next/navigation'; // TODO: 로그인 구현 후 제거
-// TODO: 로그인 구현 후 아래 주석 복구
-// import { useSession } from '@/lib/auth-client';
+import { useSession } from '@/lib/auth-client';
 import ChatMessageList from './ChatMessageList';
 import ChatInput from './ChatInput';
 import { ChatMessageData } from './ChatMessage';
 
-const TEST_USER_ID = 'test-user-id'; // TODO: 로그인 구현 후 제거
-
 export default function ChatSidebar() {
-  // TODO: 로그인 구현 후 아래 주석 복구
-  // const { data: session } = useSession();
-  const searchParams = useSearchParams(); // TODO: 로그인 구현 후 제거
-  const currentUserId = searchParams.get('userId') ?? TEST_USER_ID; // TODO: 로그인 구현 후 session.user.id 로 교체
+  const { data: session } = useSession();
+  const currentUserId = session?.user?.id ?? '';
   const [messages, setMessages] = useState<ChatMessageData[]>([]);
 
   // 초기 메시지 로드
@@ -26,7 +20,7 @@ export default function ChatSidebar() {
 
   // SSE 연결
   useEffect(() => {
-    const eventSource = new EventSource(`/api/chat/stream?userId=${currentUserId}`);
+    const eventSource = new EventSource('/api/chat/stream');
 
     eventSource.onmessage = (e) => {
       const newMessage: ChatMessageData = JSON.parse(e.data);
@@ -46,7 +40,7 @@ export default function ChatSidebar() {
     await fetch('/api/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ content, userId: currentUserId }), // TODO: 로그인 구현 후 userId 제거
+      body: JSON.stringify({ content }),
     });
   };
 

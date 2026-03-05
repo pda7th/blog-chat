@@ -8,7 +8,7 @@ export type ChatMessageData = {
   createdAt: Date | string;
   userId: string;
   nickname: string | null;
-  userProfileImageUrl: string | null;
+  image: string | null;
 };
 
 type Props = {
@@ -41,9 +41,9 @@ export default function ChatMessage({ message, isMe }: Props) {
   return (
     <div className="flex items-start gap-2 px-4 py-1">
       <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center text-white text-xs font-bold shrink-0">
-        {message.userProfileImageUrl ? (
+        {message.image ? (
           <Image
-            src={message.userProfileImageUrl}
+            src={message.image}
             alt={message.nickname ?? ''}
             width={32}
             height={32}
