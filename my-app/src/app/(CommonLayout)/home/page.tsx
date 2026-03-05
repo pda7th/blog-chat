@@ -7,7 +7,7 @@ export default function page() {
     <main className="flex flex-col gap-32pxr p-32pxr">
       <article className="flex w-796pxr items-center justify-between self-stretch rounded-lg border border-dashed border-[#00C471] bg-[rgba(234,251,242,0.30)] p-20pxr">
         🌱 오늘 배운 지식을 기록하고 공유해보세요.
-        <MainBtn>글쓰기</MainBtn>
+        <MainBtn className="text-white">글쓰기</MainBtn>
       </article>
       <PostCard
         subtitle="React"

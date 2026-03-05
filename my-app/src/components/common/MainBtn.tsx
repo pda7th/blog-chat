@@ -1,7 +1,4 @@
-type MainBtnProps = {
-  children: React.ReactNode;
-  className?: string;
-};
+import { MainBtnProps } from '@/types/MainBtn.types';
 
 export default function MainBtn(props: MainBtnProps) {
   const { children, className } = props;

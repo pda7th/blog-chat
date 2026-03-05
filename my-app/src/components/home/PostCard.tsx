@@ -1,12 +1,5 @@
 import { CommentIcon, LikeIcon } from '../../../public/icon';
-
-type PostCardProps = {
-  subtitle: string;
-  title: string;
-  content: string;
-  commentCount: number;
-  likeCount: number;
-};
+import { PostCardProps } from '@/types/PostCard.types';
 
 export default function PostCard({ subtitle, title, content, commentCount, likeCount }: PostCardProps) {
   return (
