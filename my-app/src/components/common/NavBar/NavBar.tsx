@@ -19,7 +19,7 @@ export default function NavBar() {
   };
 
   return (
-    <nav className="flex items-center gap-12pxr border-b border-gray-100 bg-white px-32pxr py-12pxr">
+    <nav className="flex items-center gap-12pxr border-b border-gray-100 bg-white py-35pxr">
       <div className="flex shrink-0 items-center gap-4pxr">
         <span className="fonts-logo tracking-tight text-green-500">싹심기</span>
         <span>🌱</span>

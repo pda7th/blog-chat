@@ -4,21 +4,30 @@ import MainBtn from '../common/MainBtn';
 import { useState } from 'react';
 import CategoryDropdown from './CategoryDropdown';
 import ImageUpload from '@/components/common/ImageUpload/ImageUpload';
-import { type PostCategory } from '@/lib/constants';
+import { POST_CATEGORIES, type PostCategory } from '@/lib/constants';
 import { createPost } from '@/lib/post';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 type WriteCategory = Exclude<PostCategory, '전체'>;
 
+const WRITE_CATEGORIES = POST_CATEGORIES.filter((c) => c !== '전체') as WriteCategory[];
+
 export default function PostEditor() {
   const router = useRouter();
-  const [category, setCategory] = useState<WriteCategory>('수업');
+  const searchParams = useSearchParams();
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [image1, setImage1] = useState<string | null>(null);
   const [image2, setImage2] = useState<string | null>(null);
   const [image3, setImage3] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const initialCategory = (): WriteCategory => {
+    const param = searchParams.get('category') as WriteCategory | null;
+    return param && WRITE_CATEGORIES.includes(param) ? param : '수업';
+  };
+
+  const [category, setCategory] = useState<WriteCategory>(initialCategory);
 
   const handleSubmit = async () => {
     if (!title.trim() || !content.trim()) return;

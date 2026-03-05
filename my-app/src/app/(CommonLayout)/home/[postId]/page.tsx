@@ -48,7 +48,7 @@ export default function PostDetailPage() {
   if (!post) return <div className="p-32pxr text-gray-400">불러오는 중...</div>;
 
   return (
-    <main className="flex flex-col gap-24pxr p-32pxr">
+    <main className="flex flex-col gap-24pxr py-32pxr">
       <button onClick={() => router.back()} className="self-start text-sm text-gray-400 hover:text-gray-600">
         ← 목록으로
       </button>
