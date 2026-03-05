@@ -3,6 +3,8 @@ import { db } from '@/db';
 import { post, postLikes, comment } from '@/db/schema/post';
 import { eq, desc, and, count, inArray } from 'drizzle-orm';
 import type { ApiEnvelope, ApiPaginationEnvelope } from '@/types/api-envelopes';
+import { auth } from '@/lib/auth';
+import { headers } from 'next/headers';
 
 export async function GET(req: NextRequest) {
   try {
@@ -95,13 +97,13 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
-    // const session = await auth.api.getSession({ headers: await headers() });
-    // if (!session) {
-    //   return NextResponse.json(
-    //     { success: false, error: { message: '로그인이 필요합니다.' } } satisfies ApiEnvelope<never>,
-    //     { status: 401 },
-    //   );
-    // }
+    const session = await auth.api.getSession({ headers: await headers() });
+    if (!session) {
+      return NextResponse.json(
+        { success: false, error: { message: '로그인이 필요합니다.' } } satisfies ApiEnvelope<never>,
+        { status: 401 },
+      );
+    }
 
     const body = await req.json();
     const { title, content, category, image1, image2, image3 } = body;
@@ -116,8 +118,7 @@ export async function POST(req: NextRequest) {
     const [created] = await db
       .insert(post)
       .values({
-        // userId: session.user.id,
-        userId: 'test-user-id',
+        userId: session.user.id,
         title: title.trim(),
         content: content.trim(),
         category,

@@ -4,6 +4,8 @@ import { post, postLikes, comment } from '@/db/schema/post';
 import { user } from '@/db/schema/auth';
 import { eq, and, count } from 'drizzle-orm';
 import type { ApiEnvelope } from '@/types/api-envelopes';
+import { auth } from '@/lib/auth';
+import { headers } from 'next/headers';
 
 type Params = { params: Promise<{ postId: string }> };
 
@@ -69,11 +71,12 @@ export async function GET(_req: NextRequest, { params }: Params) {
 
 export async function PATCH(req: NextRequest, { params }: Params) {
   try {
-    // const session = await auth.api.getSession({ headers: await headers() });
-    // if (!session) return NextResponse.json(
-    //   { success: false, error: { message: '로그인이 필요합니다.' } } satisfies ApiEnvelope<never>,
-    //   { status: 401 },
-    // );
+    const session = await auth.api.getSession({ headers: await headers() });
+    if (!session)
+      return NextResponse.json(
+        { success: false, error: { message: '로그인이 필요합니다.' } } satisfies ApiEnvelope<never>,
+        { status: 401 },
+      );
 
     const { postId } = await params;
     const id = Number(postId);
@@ -95,12 +98,12 @@ export async function PATCH(req: NextRequest, { params }: Params) {
       );
     }
 
-    // if (existing.userId !== session.user.id) {
-    //   return NextResponse.json(
-    //     { success: false, error: { message: '수정 권한이 없습니다.' } } satisfies ApiEnvelope<never>,
-    //     { status: 403 },
-    //   );
-    // }
+    if (existing.userId !== session.user.id) {
+      return NextResponse.json(
+        { success: false, error: { message: '수정 권한이 없습니다.' } } satisfies ApiEnvelope<never>,
+        { status: 403 },
+      );
+    }
 
     const body = await req.json();
     const { title, content, category, image1, image2, image3 } = body;
@@ -135,11 +138,12 @@ export async function PATCH(req: NextRequest, { params }: Params) {
 
 export async function DELETE(_req: NextRequest, { params }: Params) {
   try {
-    // const session = await auth.api.getSession({ headers: await headers() });
-    // if (!session) return NextResponse.json(
-    //   { success: false, error: { message: '로그인이 필요합니다.' } } satisfies ApiEnvelope<never>,
-    //   { status: 401 },
-    // );
+    const session = await auth.api.getSession({ headers: await headers() });
+    if (!session)
+      return NextResponse.json(
+        { success: false, error: { message: '로그인이 필요합니다.' } } satisfies ApiEnvelope<never>,
+        { status: 401 },
+      );
 
     const { postId } = await params;
     const id = Number(postId);
@@ -161,12 +165,12 @@ export async function DELETE(_req: NextRequest, { params }: Params) {
       );
     }
 
-    // if (existing.userId !== session.user.id) {
-    //   return NextResponse.json(
-    //     { success: false, error: { message: '삭제 권한이 없습니다.' } } satisfies ApiEnvelope<never>,
-    //     { status: 403 },
-    //   );
-    // }
+    if (existing.userId !== session.user.id) {
+      return NextResponse.json(
+        { success: false, error: { message: '삭제 권한이 없습니다.' } } satisfies ApiEnvelope<never>,
+        { status: 403 },
+      );
+    }
 
     await db.update(post).set({ status: 'DELETED' }).where(eq(post.postId, id));
 
