@@ -102,7 +102,7 @@ jobs:
             infra/prod/docker-compose.prod.yml \
             ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/srv/app/docker-compose.prod.yml
 
-          rsync -avz --delete \
+          rsync -avz --delete --exclude='log/' \
             infra/prod/nginx/ \
             ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/srv/app/nginx/
 
