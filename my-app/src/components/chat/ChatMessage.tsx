@@ -17,7 +17,7 @@ type Props = {
 };
 
 export default function ChatMessage({ message, isMe }: Props) {
-  const time = new Date(message.createdAt).toLocaleTimeString('ko-KR', {
+const time = new Date(message.createdAt).toLocaleTimeString('ko-KR', {
     hour: '2-digit',
     minute: '2-digit',
     timeZone: 'Asia/Seoul',
