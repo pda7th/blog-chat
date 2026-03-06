@@ -39,7 +39,19 @@ COPY my-app/src/db ./src/db
 CMD ["pnpm", "db:migrate"]
 
 # =====================================================
-# Stage 5: runner — 경량 프로덕션 앱 이미지 (standalone)
+# Stage 5: seed — 채팅방 초기 데이터 삽입용
+#   - deploy.sh에서 one-off 컨테이너로 실행
+# =====================================================
+FROM base AS seed
+WORKDIR /app
+ENV NODE_ENV=production
+COPY --from=deps /app/node_modules ./node_modules
+COPY my-app/package.json my-app/pnpm-lock.yaml ./
+COPY my-app/src/db ./src/db
+CMD ["pnpm", "db:seed"]
+
+# =====================================================
+# Stage 6: runner — 경량 프로덕션 앱 이미지 (standalone)
 # =====================================================
 FROM node:20-alpine AS runner
 WORKDIR /app

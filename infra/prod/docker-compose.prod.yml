@@ -35,6 +35,21 @@ services:
       - migrate
 
   # ─────────────────────────────────────────────
+  # DB Seed (one-off, profile=seed)
+  #   deploy.sh에서: docker compose --profile seed run --rm seed
+  # ─────────────────────────────────────────────
+  seed:
+    image: ${DOCKER_IMAGE}:seed
+    env_file: /srv/app/.env
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - app_network
+    profiles:
+      - seed
+
+  # ─────────────────────────────────────────────
   # Next.js App
   # ─────────────────────────────────────────────
   app:
