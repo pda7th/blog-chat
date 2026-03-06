@@ -4,10 +4,14 @@ import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { fetchPost, deletePost, toggleLike, type PostDetail } from '@/lib/post';
 import { CommentIcon, LikeStrokeIcon, LikeFilledIcon } from '../../../../../public/icon/index';
+import { useSession } from '@/lib/auth-client';
+import { CommentSection } from '@/features/comments/CommentSection';
 
 export default function PostDetailPage() {
   const { postId } = useParams();
   const router = useRouter();
+  const { data: session } = useSession();
+  const currentUserId = session?.user?.id ?? undefined;
   const [post, setPost] = useState<PostDetail | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [liked, setLiked] = useState(false);
@@ -100,6 +104,8 @@ export default function PostDetailPage() {
           </button>
         </section>
       </article>
+
+      <CommentSection postId={Number(postId)} currentUserId={currentUserId} />
     </main>
   );
 }

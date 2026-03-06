@@ -1,6 +1,7 @@
 export interface AuthorDto {
   userId: string;
   nickname: string | null;
+  image: string | null;
 }
 
 export interface ReplyToDto {

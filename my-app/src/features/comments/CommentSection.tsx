@@ -74,7 +74,7 @@ export function CommentSection({ postId, currentUserId }: Props) {
         {hasNext && !loading && (
           <button
             onClick={() => loadComments(nextCursor)}
-            className="self-center text-sm text-blue-500 hover:underline"
+            className="self-center text-sm text-green-500 hover:underline"
           >
             댓글 더 보기
           </button>

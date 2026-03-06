@@ -40,14 +40,23 @@ export function ReplyItem({ reply, postId, rootCommentId, currentUserId, onReply
   return (
     <div className="ml-8 border-l-2 border-gray-100 pl-3">
       <div className="flex items-start justify-between gap-2">
-        <div className="flex-1">
-          <span className="mr-1 text-xs font-semibold text-gray-700">{reply.author.nickname ?? '익명'}</span>
-          {showAtPrefix && (
-            <span className="mr-1 text-xs font-semibold text-blue-500">@{reply.replyTo!.nickname}</span>
+        <div className="flex flex-1 gap-2">
+          {reply.author.image ? (
+            <img src={reply.author.image} alt={reply.author.nickname ?? '프로필'} className="h-6 w-6 shrink-0 rounded-full object-cover" />
+          ) : (
+            <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-green-100 text-[10px] font-bold text-green-600">
+              {(reply.author.nickname ?? '익')[0]}
+            </div>
           )}
-          <span className={`text-sm ${isDeleted ? 'italic text-gray-400' : 'text-gray-800'}`}>
-            {reply.content}
-          </span>
+          <div className="flex-1">
+            <span className="mr-1 text-xs font-semibold text-gray-700">{reply.author.nickname ?? '익명'}</span>
+            {showAtPrefix && (
+              <span className="mr-1 text-xs font-semibold text-green-500">@{reply.replyTo!.nickname}</span>
+            )}
+            <span className={`text-sm ${isDeleted ? 'italic text-gray-400' : 'text-gray-800'}`}>
+              {reply.content}
+            </span>
+          </div>
         </div>
         {isOwner && !isDeleted && (
           <div className="flex shrink-0 gap-1">
@@ -60,7 +69,7 @@ export function ReplyItem({ reply, postId, rootCommentId, currentUserId, onReply
         {!isDeleted && (
           <button
             onClick={() => setShowReplyForm((v) => !v)}
-            className="text-[11px] text-gray-400 hover:text-blue-500"
+            className="text-[11px] text-gray-400 hover:text-green-500"
           >
             답글 달기
           </button>
