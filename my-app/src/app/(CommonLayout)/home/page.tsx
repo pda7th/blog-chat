@@ -15,37 +15,47 @@ function HomePageContent() {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const isLoadingRef = useRef(false);
+  const hasMoreRef = useRef(true);
   const observerRef = useRef<IntersectionObserver | null>(null);
   const bottomRef = useRef<HTMLDivElement | null>(null);
 
-  // 카테고리 바뀌면 초기화
-  useEffect(() => {
-    setPosts([]);
-    setPage(1);
-    setHasMore(true);
-  }, [category]);
-
   const loadPosts = useCallback(
     async (currentPage: number) => {
-      if (isLoading || !hasMore) return;
+      if (isLoadingRef.current || !hasMoreRef.current) return;
+      isLoadingRef.current = true;
       setIsLoading(true);
       try {
         const data = await fetchPosts({ category, page: currentPage, pageSize: 10 });
         setPosts((prev) => (currentPage === 1 ? data.items : [...prev, ...data.items]));
-        setHasMore(data.items.length === 10); // 여기 수정
+        hasMoreRef.current = data.items.length === 10;
+        setHasMore(data.items.length === 10);
       } catch (err) {
         console.error(err);
       } finally {
+        isLoadingRef.current = false;
         setIsLoading(false);
       }
     },
-    [category, isLoading, hasMore],
+    [category],
   );
 
+  // 카테고리 바뀌면 초기화 후 1페이지 즉시 로드
   useEffect(() => {
+    setPosts([]);
+    setPage(1);
+    hasMoreRef.current = true;
+    isLoadingRef.current = false;
+    setHasMore(true);
+    setIsLoading(false);
+    loadPosts(1);
+  }, [category, loadPosts]);
+
+  // 무한스크롤: page가 1 초과일 때만 추가 로드
+  useEffect(() => {
+    if (page === 1) return;
     loadPosts(page);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, category]);
+  }, [page, loadPosts]);
 
   // IntersectionObserver 설정
   useEffect(() => {
