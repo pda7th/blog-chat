@@ -63,7 +63,7 @@ export function CommentForm({ postId, replyTarget, onSuccess, onCancel }: Props)
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-2">
       <textarea
-        className="w-full resize-none rounded-lg border border-gray-200 p-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-400"
+        className="w-full resize-none rounded-lg border border-gray-200 p-2 text-sm focus:outline-none focus:ring-1 focus:ring-green-400"
         rows={2}
         placeholder={placeholder}
         value={content}
@@ -80,7 +80,7 @@ export function CommentForm({ postId, replyTarget, onSuccess, onCancel }: Props)
         <button
           type="submit"
           disabled={loading || !content.trim()}
-          className="rounded bg-blue-500 px-3 py-1 text-xs text-white hover:bg-blue-600 disabled:opacity-40"
+          className="rounded bg-[#00C471] px-3 py-1 text-xs text-white hover:bg-green-600 disabled:opacity-40"
         >
           {loading ? '작성 중...' : '작성'}
         </button>

@@ -9,7 +9,7 @@ const DELETED_CONTENT = '삭제된 댓글입니다.';
 // ── row → DTO ────────────────────────────────────────────────────────────────
 function toDto(
   row: typeof comment.$inferSelect,
-  author: { id: string; nickname: string | null },
+  author: { id: string; nickname: string | null; userProfileImageUrl: string | null; image: string | null },
   replyToAuthor?: { id: string; nickname: string | null } | null,
 ): CommentDto {
   return {
@@ -22,7 +22,11 @@ function toDto(
     status: row.status,
     createdAt: row.createdAt,
     updatedAt: row.updatedAt,
-    author: { userId: author.id, nickname: author.nickname ?? null },
+    author: {
+      userId: author.id,
+      nickname: author.nickname ?? null,
+      image: author.image ?? author.userProfileImageUrl ?? null,
+    },
     replyTo: replyToAuthor
       ? { commentId: row.replyToCommentId!, userId: replyToAuthor.id, nickname: replyToAuthor.nickname ?? null }
       : null,
@@ -58,7 +62,7 @@ export async function findRootComments(
   const rows = await db
     .select({
       comment,
-      author: { id: authorAlias.id, nickname: authorAlias.nickname },
+      author: { id: authorAlias.id, nickname: authorAlias.nickname, userProfileImageUrl: authorAlias.userProfileImageUrl, image: authorAlias.image },
     })
     .from(comment)
     .innerJoin(authorAlias, eq(comment.userId, authorAlias.id))
@@ -81,7 +85,6 @@ export async function findReplies(
   limit: number,
 ): Promise<{ items: CommentDto[]; nextCursor: string | null; hasNext: boolean }> {
   const authorUser = user;
-  const replyToUser = db.$with('reply_to_user').as(db.select().from(user));
 
   const baseWhere = eq(comment.parentId, parentCommentId);
   const cursorWhere = cursor
@@ -91,13 +94,10 @@ export async function findReplies(
       )
     : undefined;
 
-  // replyToComment join을 위한 self-join
-  const replyToComment = db.$with('reply_to_comment').as(db.select().from(comment));
-
   const rows = await db
     .select({
       comment,
-      author: { id: authorUser.id, nickname: authorUser.nickname },
+      author: { id: authorUser.id, nickname: authorUser.nickname, userProfileImageUrl: authorUser.userProfileImageUrl, image: authorUser.image },
     })
     .from(comment)
     .innerJoin(authorUser, eq(comment.userId, authorUser.id))
@@ -164,10 +164,23 @@ export async function insertComment(data: {
   const inserted = await findCommentById(result.insertId);
   if (!inserted) throw new Error('insert 후 댓글 조회 실패');
 
-  const authorRow = await db.select({ id: user.id, nickname: user.nickname }).from(user).where(eq(user.id, data.userId)).limit(1);
-  const author = authorRow[0] ?? { id: data.userId, nickname: null };
+  const authorRow = await db.select({ id: user.id, nickname: user.nickname, userProfileImageUrl: user.userProfileImageUrl, image: user.image }).from(user).where(eq(user.id, data.userId)).limit(1);
+  const author = authorRow[0] ?? { id: data.userId, nickname: null, userProfileImageUrl: null, image: null };
 
-  return toDto(inserted, author);
+  let replyToAuthor: { id: string; nickname: string | null } | null = null;
+  if (data.replyToCommentId != null) {
+    const replyToRows = await db
+      .select({ userId: comment.userId, nickname: user.nickname })
+      .from(comment)
+      .innerJoin(user, eq(comment.userId, user.id))
+      .where(eq(comment.commentId, data.replyToCommentId))
+      .limit(1);
+    if (replyToRows[0]) {
+      replyToAuthor = { id: replyToRows[0].userId, nickname: replyToRows[0].nickname ?? null };
+    }
+  }
+
+  return toDto(inserted, author, replyToAuthor ?? undefined);
 }
 
 // ── 댓글 수정 ─────────────────────────────────────────────────────────────────
