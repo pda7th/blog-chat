@@ -36,7 +36,7 @@ export async function GET(req: NextRequest, { params }: Params) {
         userId: post.userId,
         authorName: user.name,
         authorNickname: user.nickname,
-        authorProfileImage: user.userProfileImageUrl,
+        authorProfileImage: user.image,
       })
       .from(post)
       .innerJoin(user, eq(post.userId, user.id))

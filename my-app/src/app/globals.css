@@ -16,10 +16,10 @@
     min-width: 1024px;
     height: 100dvh;
     margin: 0 auto;
-    background-color: white;
+    background-color: #F7F8FA;
     -ms-overflow-style: none;
     position: relative;
-    box-shadow: 0 5px 20px 0 rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.08);
   }
 
   ::-webkit-scrollbar {

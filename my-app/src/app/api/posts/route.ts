@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/db';
 import { post, postLikes, comment } from '@/db/schema/post';
+import { user } from '@/db/schema/auth';
 import { eq, desc, and, count, inArray } from 'drizzle-orm';
 import type { ApiEnvelope, ApiPaginationEnvelope } from '@/types/api-envelopes';
 import { auth } from '@/lib/auth';
@@ -34,8 +35,12 @@ export async function GET(req: NextRequest) {
           image3: post.image3,
           createdAt: post.createdAt,
           userId: post.userId,
+          authorName: user.name,
+          authorNickname: user.nickname,
+          authorProfileImage: user.image,
         })
         .from(post)
+        .innerJoin(user, eq(post.userId, user.id))
         .where(where)
         .orderBy(desc(post.createdAt))
         .limit(pageSize)

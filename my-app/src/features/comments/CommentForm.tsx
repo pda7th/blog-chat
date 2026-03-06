@@ -61,9 +61,9 @@ export function CommentForm({ postId, replyTarget, onSuccess, onCancel }: Props)
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-2">
+    <form onSubmit={handleSubmit} className="flex flex-col gap-2.5 rounded-2xl border border-gray-100 bg-gray-50/50 p-4 shadow-sm">
       <textarea
-        className="w-full resize-none rounded-lg border border-gray-200 p-2 text-sm focus:outline-none focus:ring-1 focus:ring-green-400"
+        className="w-full resize-none rounded-xl border border-gray-200 bg-white p-3 text-sm transition-all duration-150 focus:border-green-300 focus:outline-none focus:ring-2 focus:ring-green-400/20"
         rows={2}
         placeholder={placeholder}
         value={content}
@@ -73,14 +73,14 @@ export function CommentForm({ postId, replyTarget, onSuccess, onCancel }: Props)
       {error && <p className="text-xs text-red-500">{error}</p>}
       <div className="flex justify-end gap-2">
         {onCancel && (
-          <button type="button" onClick={onCancel} className="rounded px-3 py-1 text-xs text-gray-500 hover:bg-gray-100">
+          <button type="button" onClick={onCancel} className="rounded-lg px-3 py-1.5 text-xs font-medium text-gray-500 transition-colors duration-150 hover:bg-gray-100">
             취소
           </button>
         )}
         <button
           type="submit"
           disabled={loading || !content.trim()}
-          className="rounded bg-[#00C471] px-3 py-1 text-xs text-white hover:bg-green-600 disabled:opacity-40"
+          className="rounded-lg bg-[#00C471] px-4 py-1.5 text-xs font-bold text-white shadow-sm transition-all duration-150 hover:bg-green-600 active:scale-95 disabled:opacity-40"
         >
           {loading ? '작성 중...' : '작성'}
         </button>

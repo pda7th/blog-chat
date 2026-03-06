@@ -27,31 +27,38 @@ export default function MyPostList() {
 
     return (
         <div className="flex-1">
-            <div className="inline-block border-b-2 border-[#00B461] mb-10 pb-1">
+            <div className="mb-8 flex items-center gap-2">
+                <div className="h-5 w-1.5 rounded-full bg-[#00C471]" />
                 <h2 className="text-[20px] font-bold text-[#333333] tracking-tight">내가 심은 지식</h2>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-3">
                 {loading ? (
-                    <div className="text-center py-20 text-gray-400">불러오는 중...</div>
+                    <div className="flex items-center justify-center gap-2 py-20 text-sm text-gray-400">
+                        <div className="h-4 w-4 animate-spin rounded-full border-2 border-green-400 border-t-transparent" />
+                        <span>불러오는 중...</span>
+                    </div>
                 ) : posts.length > 0 ? (
                     posts.map((post) => (
                         <div
                             key={post.postId}
                             onClick={() => router.push(`/home/${post.postId}`)}
-                            className="w-full bg-white border border-[#F0F0F0] rounded-[16px] p-6 flex justify-between items-center hover:shadow-sm transition-all cursor-pointer"
+                            className="flex w-full cursor-pointer items-center justify-between rounded-2xl border border-gray-100 bg-white p-6 shadow-sm transition-all duration-200 hover:border-green-100 hover:shadow-md"
                         >
-                            <span className="text-[#444444] font-semibold text-[17px]">{post.title}</span>
-                            <span className="text-[#CCCCCC] text-sm font-medium">
+                            <div className="flex items-center gap-3">
+                                <div className="h-2 w-2 rounded-full bg-green-300" />
+                                <span className="text-[16px] font-semibold text-[#444444]">{post.title}</span>
+                            </div>
+                            <span className="shrink-0 text-sm font-medium text-[#CCCCCC]">
                                 {new Date(post.createdAt).toLocaleDateString('ko-KR')}
                             </span>
                         </div>
                     ))
                 ) : (
-                    <div className="flex flex-col items-center justify-center py-20 text-[#CCCCCC]">
-                        <span className="text-4xl mb-4">🌱</span>
-                        <p>아직 작성한 포스트가 없습니다.</p>
-                        <p className="text-sm">첫 번째 지식의 씨앗을 심어보세요!</p>
+                    <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-gray-200 py-20 text-[#CCCCCC]">
+                        <span className="mb-4 text-4xl">🌱</span>
+                        <p className="font-medium">아직 작성한 포스트가 없습니다.</p>
+                        <p className="mt-1 text-sm">첫 번째 지식의 씨앗을 심어보세요!</p>
                     </div>
                 )}
             </div>
