@@ -20,7 +20,7 @@ export default function ChatMessage({ message, isMe }: Props) {
   const time = new Date(message.createdAt).toLocaleTimeString('ko-KR', {
     hour: '2-digit',
     minute: '2-digit',
-    timeZone: 'Asia/Seoul',
+    timeZone: 'UTC',
   });
 
   const initial = message.nickname?.charAt(0) ?? '?';
@@ -40,14 +40,13 @@ export default function ChatMessage({ message, isMe }: Props) {
 
   return (
     <div className="flex items-start gap-2 px-4 py-1">
-      <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center text-white text-xs font-bold shrink-0">
+      <div className="relative w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center text-white text-xs font-bold shrink-0 overflow-hidden">
         {message.image ? (
           <Image
             src={message.image}
             alt={message.nickname ?? ''}
-            width={32}
-            height={32}
-            className="rounded-full object-cover"
+            fill
+            className="object-cover"
           />
         ) : (
           initial
