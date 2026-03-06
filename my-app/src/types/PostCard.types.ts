@@ -6,4 +6,7 @@ export type PostCardProps = {
   commentCount: number;
   likeCount: number;
   liked?: boolean;
+  authorName: string;
+  authorNickname: string | null;
+  authorProfileImage: string | null;
 };

@@ -12,23 +12,24 @@ export default function NavBar() {
   const { data: session } = useSession();
 
   const activeCategory = (searchParams.get('category') ?? '전체') as PostCategory;
-  const initial = session?.user?.name?.charAt(0) ?? '?';
-
   const handleCategoryClick = (category: PostCategory) => {
     if (category === '전체') router.push('/home');
     else router.push(`/home?category=${encodeURIComponent(category)}`);
   };
 
   return (
-    <nav className="flex items-center gap-18pxr border-b border-gray-100 bg-white py-35pxr">
-      <div className="flex shrink-0 items-center gap-4pxr">
-        <span className="fonts-logo tracking-tight text-green-500">싹심기</span>
-        <span>🌱</span>
-      </div>
+    <nav className="flex items-center gap-18pxr border-b border-gray-100 bg-white/95 py-20pxr shadow-sm backdrop-blur-sm">
+      <button
+        onClick={() => router.push('/home')}
+        className="flex shrink-0 items-center gap-6pxr"
+      >
+        <span className="fonts-logo tracking-tight text-[#00C471]">싹심기</span>
+        <span className="flex h-6 w-6 items-center justify-center rounded-full bg-green-50 text-xs">🌱</span>
+      </button>
       <div className="flex min-w-0 flex-1 items-center justify-between">
         {/* 카테고리 영역 */}
         <section className="flex min-w-0 flex-1 items-center">
-          <div className="flex min-w-0 flex-1 items-center gap-8pxr overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          <div className="flex min-w-0 flex-1 items-center gap-6pxr overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {POST_CATEGORIES.map((category) => (
               <NavItem
                 key={category}
@@ -43,7 +44,7 @@ export default function NavBar() {
 
         <section className="flex shrink-0 items-center"></section>
       </div>
-      {/* 우측: 출석 버튼 + 아바타 */}
+      {/* 우측: 아바타 */}
       <div className="flex min-w-[120px] items-center justify-end gap-3">
         {session ? (
           // 1. 로그인 상태인 경우: 로그아웃 버튼 + 프로필 이미지
@@ -51,7 +52,7 @@ export default function NavBar() {
             <LogoutButton />
             <button
               onClick={() => router.push('/mypage')}
-              className="relative h-9 w-9 shrink-0 overflow-hidden rounded-full border border-gray-100 bg-gray-50 transition-all hover:ring-2 hover:ring-green-400 active:scale-95"
+              className="relative h-9 w-9 shrink-0 overflow-hidden rounded-full border-2 border-gray-100 bg-gray-50 shadow-sm transition-all duration-200 hover:border-green-300 hover:ring-2 hover:ring-green-400/30 active:scale-95"
             >
               <img
                 src={session.user.image || 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'}
@@ -64,7 +65,7 @@ export default function NavBar() {
           // 2. 로그인하지 않은 경우: 로그인 버튼 표시
           <button
             onClick={() => router.push('/login')}
-            className="rounded-full border border-green-500 px-4 py-2 text-sm font-medium text-green-500 transition-colors hover:bg-green-50">
+            className="rounded-full bg-[#00C471] px-5 py-2 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:bg-green-600 active:scale-95">
             로그인
           </button>
         )}

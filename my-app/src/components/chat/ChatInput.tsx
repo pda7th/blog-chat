@@ -24,20 +24,20 @@ export default function ChatInput({ onSend }: Props) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex items-center gap-2 px-4 py-3 border-t border-gray-100">
+    <form onSubmit={handleSubmit} className="flex items-center gap-2 border-t border-gray-100 bg-white px-4 py-3">
       <input
         ref={inputRef}
         type="text"
         value={value}
         onChange={(e) => setValue(e.target.value)}
         placeholder="메시지를 입력하세요"
-        className="flex-1 text-sm bg-gray-100 rounded-full px-4 py-2 outline-none"
+        className="flex-1 rounded-full border border-gray-200 bg-gray-50 px-4 py-2 text-sm outline-none transition-all duration-150 focus:border-green-300 focus:bg-white focus:ring-2 focus:ring-green-400/20"
         disabled={sending}
       />
       <button
         type="submit"
         disabled={!value.trim() || sending}
-        className="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center disabled:opacity-40"
+        className="flex h-8 w-8 items-center justify-center rounded-full bg-[#00C471] shadow-sm transition-all duration-150 hover:bg-green-600 active:scale-95 disabled:opacity-40"
       >
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
           <path d="M22 2L11 13" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />

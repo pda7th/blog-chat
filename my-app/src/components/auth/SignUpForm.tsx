@@ -107,7 +107,7 @@ export default function SignUpForm() {
                 <label className="text-sm font-semibold text-gray-700">닉네임</label>
                 <input
                     required
-                    className="rounded-lg border border-gray-200 p-3 outline-none focus:ring-2 focus:ring-green-400"
+                    className="rounded-xl border border-gray-200 bg-gray-50/50 p-3 text-sm outline-none transition-all duration-150 focus:border-green-400 focus:ring-2 focus:ring-green-400/40"
                     placeholder="닉네임"
                     value={nickname}
                     onChange={(e) => setNickname(e.target.value)}
@@ -119,7 +119,7 @@ export default function SignUpForm() {
                 <input
                     required
                     type="email"
-                    className="rounded-lg border border-gray-200 p-3 outline-none focus:ring-2 focus:ring-green-400"
+                    className="rounded-xl border border-gray-200 bg-gray-50/50 p-3 text-sm outline-none transition-all duration-150 focus:border-green-400 focus:ring-2 focus:ring-green-400/40"
                     placeholder="email@example.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
@@ -131,7 +131,7 @@ export default function SignUpForm() {
                 <input
                     required
                     type="password"
-                    className="rounded-lg border border-gray-200 p-3 outline-none focus:ring-2 focus:ring-green-400"
+                    className="rounded-xl border border-gray-200 bg-gray-50/50 p-3 text-sm outline-none transition-all duration-150 focus:border-green-400 focus:ring-2 focus:ring-green-400/40"
                     placeholder="8자 이상"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
@@ -140,7 +140,7 @@ export default function SignUpForm() {
 
             <button
                 disabled={loading || uploading}
-                className="mt-2 rounded-xl bg-green-500 py-3 font-bold text-white hover:bg-green-600 disabled:bg-gray-300"
+                className="mt-2 rounded-xl bg-[#00C471] py-3 font-bold text-white shadow-sm transition-all duration-150 hover:bg-green-600 active:scale-95 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400"
             >
                 {loading ? '가입 중...' : '회원가입 하기'}
             </button>
