@@ -90,7 +90,7 @@ export default function PostDetailPage() {
           </div>
         )}
 
-        <p className="fonts-postContent whitespace-pre-wrap">{post.content}</p>
+        <div className="fonts-postContent" dangerouslySetInnerHTML={{ __html: post.content }}></div>
 
         {/* 좋아요/댓글 */}
         <section className="flex gap-12pxr border-t border-gray-100 pt-16pxr">
