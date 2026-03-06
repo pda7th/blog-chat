@@ -26,12 +26,13 @@ export type CreatePostInput = {
   title: string;
   content: string;
   category: string;
+};
+
+export type UpdatePostInput = CreatePostInput & {
   image1?: string | null;
   image2?: string | null;
   image3?: string | null;
 };
-
-export type UpdatePostInput = CreatePostInput;
 
 export async function fetchPosts(params?: { category?: PostCategory; page?: number; pageSize?: number }) {
   const query = new URLSearchParams();

@@ -12,6 +12,7 @@ import StarterKit from '@tiptap/starter-kit';
 import { TextStyle } from '@tiptap/extension-text-style';
 import { Color } from '@tiptap/extension-color';
 import FontFamily from '@tiptap/extension-font-family';
+import { ImageResize } from 'tiptap-extension-resize-image';
 
 type WriteCategory = Exclude<PostCategory, '전체'>;
 const WRITE_CATEGORIES = POST_CATEGORIES.filter((c) => c !== '전체') as WriteCategory[];
@@ -20,11 +21,9 @@ export default function PostEditor() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [title, setTitle] = useState('');
-  const [image1, setImage1] = useState<string | null>(null);
-  const [image2, setImage2] = useState<string | null>(null);
-  const [image3, setImage3] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [activeTemplate, setActiveTemplate] = useState<'수업' | '회고' | null>(null);
+  const [isHeaderOpen, setIsHeaderOpen] = useState(true);
 
   const initialCategory = (): WriteCategory => {
     const param = searchParams.get('category') as WriteCategory | null;
@@ -34,11 +33,11 @@ export default function PostEditor() {
 
   const editor = useEditor({
     immediatelyRender: false,
-    extensions: [StarterKit, TextStyle, Color, FontFamily],
+    extensions: [StarterKit, TextStyle, Color, FontFamily, ImageResize],
     content: '',
     editorProps: {
       attributes: {
-        class: 'min-h-288pxr w-full outline-none prose prose-sm max-w-none',
+        class: 'min-h-[400px] w-full outline-none prose prose-sm max-w-none',
       },
     },
   });
@@ -48,12 +47,30 @@ export default function PostEditor() {
     setActiveTemplate(type);
   };
 
+  const handleImageUpload = (url: string) => {
+    const images =
+      editor
+        ?.getJSON()
+        .content?.flatMap((node) =>
+          node.type === 'image' ? [node] : (node.content?.filter((n) => n.type === 'image') ?? []),
+        ) ?? [];
+
+    if (images.length >= 3) {
+      alert('이미지는 최대 3장까지 업로드 가능합니다.');
+      return;
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (editor?.chain().focus() as any).setImage({ src: url }).run();
+    setIsHeaderOpen(false);
+  };
+
   const handleSubmit = async () => {
     const content = editor?.getHTML() ?? '';
     if (!title.trim() || !content.trim()) return;
     setIsSubmitting(true);
     try {
-      await createPost({ title, content, category, image1, image2, image3 });
+      await createPost({ title, content, category });
       router.push('/home');
     } catch (err) {
       console.error(err);
@@ -64,72 +81,73 @@ export default function PostEditor() {
 
   return (
     <section className="flex w-full flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-[0px_4px_6px_-4px_rgba(0,0,0,0.10)]">
-      <header className="flex flex-col gap-12pxr border-b border-gray-100 bg-gray-50 p-32pxr">
-        {/* 템플릿 버튼 */}
-        <div className="flex items-center gap-8pxr">
-          <button
-            onClick={() => applyTemplate('수업')}
-            className={`rounded px-12pxr py-6pxr transition-colors ${activeTemplate === '수업' ? 'bg-emerald-500' : 'border border-gray-200 bg-white hover:border-emerald-400'}`}>
-            <span className={activeTemplate === '수업' ? 'fonts-chipActive' : 'fonts-chipInactive'}>수업 템플릿</span>
-          </button>
-          <button
-            onClick={() => applyTemplate('회고')}
-            className={`rounded px-12pxr py-6pxr transition-colors ${activeTemplate === '회고' ? 'bg-emerald-500' : 'border border-gray-200 bg-white hover:border-emerald-400'}`}>
-            <span className={activeTemplate === '회고' ? 'fonts-chipActive' : 'fonts-chipInactive'}>회고 템플릿</span>
-          </button>
-          <CategoryDropdown value={category} onChange={setCategory} />
-        </div>
+      {/* 헤더 토글 버튼 */}
+      <button
+        onClick={() => setIsHeaderOpen((prev) => !prev)}
+        className="flex items-center justify-between border-b border-gray-100 bg-gray-50 px-32pxr py-12pxr text-sm text-gray-400 transition-colors hover:bg-gray-100">
+        <span>{isHeaderOpen ? '제목 / 템플릿 접기' : `${title || '제목 없음'} · ${category}`}</span>
+        <span
+          className="transition-transform duration-200"
+          style={{ transform: isHeaderOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}>
+          ▲
+        </span>
+      </button>
 
-        <input
-          className="fonts-editorTitle w-full bg-transparent text-gray-900 outline-none placeholder:text-gray-300"
-          placeholder="제목을 입력하세요"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-        />
-      </header>
+      {/* 접히는 헤더 */}
+      {isHeaderOpen && (
+        <header className="flex flex-col gap-12pxr border-b border-gray-100 bg-gray-50 p-32pxr">
+          <div className="flex items-center gap-8pxr">
+            <button
+              onClick={() => applyTemplate('수업')}
+              className={`rounded px-12pxr py-6pxr transition-colors ${activeTemplate === '수업' ? 'bg-emerald-500' : 'border border-gray-200 bg-white hover:border-emerald-400'}`}>
+              <span className={activeTemplate === '수업' ? 'fonts-chipActive' : 'fonts-chipInactive'}>수업 템플릿</span>
+            </button>
+            <button
+              onClick={() => applyTemplate('회고')}
+              className={`rounded px-12pxr py-6pxr transition-colors ${activeTemplate === '회고' ? 'bg-emerald-500' : 'border border-gray-200 bg-white hover:border-emerald-400'}`}>
+              <span className={activeTemplate === '회고' ? 'fonts-chipActive' : 'fonts-chipInactive'}>회고 템플릿</span>
+            </button>
+            <CategoryDropdown value={category} onChange={setCategory} />
+          </div>
+
+          <input
+            className="fonts-editorTitle w-full bg-transparent text-gray-900 outline-none placeholder:text-gray-300"
+            placeholder="제목을 입력하세요"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+          />
+        </header>
+      )}
 
       {/* 툴바 */}
       <div className="flex flex-wrap items-center gap-4pxr border-b border-gray-100 px-24pxr py-12pxr">
-        {/* 볼드 */}
         <button
           onClick={() => editor?.chain().focus().toggleBold().run()}
           className={`rounded px-8pxr py-4pxr text-sm font-bold transition-colors ${editor?.isActive('bold') ? 'bg-gray-200' : 'hover:bg-gray-100'}`}>
           B
         </button>
-
-        {/* 이탤릭 */}
         <button
           onClick={() => editor?.chain().focus().toggleItalic().run()}
           className={`rounded px-8pxr py-4pxr text-sm italic transition-colors ${editor?.isActive('italic') ? 'bg-gray-200' : 'hover:bg-gray-100'}`}>
           I
         </button>
-
-        {/* 취소선 */}
         <button
           onClick={() => editor?.chain().focus().toggleStrike().run()}
           className={`rounded px-8pxr py-4pxr text-sm line-through transition-colors ${editor?.isActive('strike') ? 'bg-gray-200' : 'hover:bg-gray-100'}`}>
           S
         </button>
-
         <div className="h-16pxr w-px bg-gray-200" />
-
-        {/* 글머리 목록 */}
         <button
           onClick={() => editor?.chain().focus().toggleBulletList().run()}
           className={`rounded px-8pxr py-4pxr text-sm transition-colors ${editor?.isActive('bulletList') ? 'bg-gray-200' : 'hover:bg-gray-100'}`}>
           • 목록
         </button>
-
-        {/* 번호 목록 */}
         <button
           onClick={() => editor?.chain().focus().toggleOrderedList().run()}
           className={`rounded px-8pxr py-4pxr text-sm transition-colors ${editor?.isActive('orderedList') ? 'bg-gray-200' : 'hover:bg-gray-100'}`}>
           1. 목록
         </button>
-
         <div className="h-16pxr w-px bg-gray-200" />
-
-        {/* 폰트 선택 */}
         <select
           onChange={(e) => {
             const font = e.target.value;
@@ -143,10 +161,7 @@ export default function PostEditor() {
             </option>
           ))}
         </select>
-
         <div className="h-16pxr w-px bg-gray-200" />
-
-        {/* 색상 선택 */}
         <div className="flex items-center gap-4pxr">
           {COLORS.map((color) => (
             <button
@@ -157,26 +172,8 @@ export default function PostEditor() {
             />
           ))}
         </div>
-
         <div className="h-16pxr w-px bg-gray-200" />
-
-        {/* 이미지 업로드 */}
-        <div className="flex items-center gap-8pxr">
-          <ImageUpload folder="posts" onUpload={setImage1} />
-          {image1 && <img src={image1} alt="이미지1" className="h-8 w-8 rounded object-cover" />}
-        </div>
-        {image1 && (
-          <div className="flex items-center gap-8pxr">
-            <ImageUpload folder="posts" onUpload={setImage2} />
-            {image2 && <img src={image2} alt="이미지2" className="h-8 w-8 rounded object-cover" />}
-          </div>
-        )}
-        {image2 && (
-          <div className="flex items-center gap-8pxr">
-            <ImageUpload folder="posts" onUpload={setImage3} />
-            {image3 && <img src={image3} alt="이미지3" className="h-8 w-8 rounded object-cover" />}
-          </div>
-        )}
+        <ImageUpload folder="posts" onUpload={handleImageUpload} />
       </div>
 
       {/* 에디터 본문 */}
