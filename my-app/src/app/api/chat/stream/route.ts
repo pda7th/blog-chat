@@ -1,3 +1,5 @@
+import { auth } from '@/lib/auth';
+
 type Subscriber = {
   controller: ReadableStreamDefaultController;
   userId: string;
@@ -17,14 +19,12 @@ export function broadcast(data: object) {
 }
 
 export async function GET(request: Request) {
-  // TODO: 로그인 구현 후 아래 주석 복구
-  // const session = await auth.api.getSession({ headers: await headers() });
-  // if (!session) return new Response('Unauthorized', { status: 401 });
+  const session = await auth.api.getSession({ headers: new Headers(request.headers) });
+  if (!session) return new Response('Unauthorized', { status: 401 });
 
-  const { searchParams } = new URL(request.url);
   const subscriber: Subscriber = {
     controller: null!,
-    userId: searchParams.get('userId') ?? 'test-user-id', // TODO: 로그인 구현 후 session.user.id 로 교체
+    userId: session.user.id,
   };
 
   const stream = new ReadableStream({

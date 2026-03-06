@@ -55,10 +55,10 @@ export function RepliesList({ rootComment, postId, currentUserId }: Props) {
   return (
     <div className="mt-1">
       <div className="flex gap-3">
-        <button onClick={handleToggle} className="text-[11px] font-medium text-blue-500 hover:underline">
+        <button onClick={handleToggle} className="text-[11px] font-medium text-green-500 hover:underline">
           {open ? '답글 숨기기' : '답글 보기'}
         </button>
-        <button onClick={() => setShowReplyForm((v) => !v)} className="text-[11px] text-gray-400 hover:text-blue-500">
+        <button onClick={() => setShowReplyForm((v) => !v)} className="text-[11px] text-gray-400 hover:text-green-500">
           답글 달기
         </button>
       </div>
@@ -98,7 +98,7 @@ export function RepliesList({ rootComment, postId, currentUserId }: Props) {
           {hasNext && !loading && (
             <button
               onClick={() => loadReplies(nextCursor)}
-              className="ml-8 text-xs text-blue-400 hover:underline"
+              className="ml-8 text-xs text-green-500 hover:underline"
             >
               답글 더 보기
             </button>

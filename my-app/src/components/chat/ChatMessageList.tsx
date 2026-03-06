@@ -16,7 +16,7 @@ export default function ChatMessageList({ messages, currentUserId }: Props) {
   }, [messages]);
 
   return (
-    <div className="flex-1 overflow-y-auto py-2">
+    <div className="flex-1 min-h-0 overflow-y-scroll py-2 [&::-webkit-scrollbar]:block [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-300">
       {messages.map((msg) => (
         <ChatMessage key={msg.chatId} message={msg} isMe={msg.userId === currentUserId} />
       ))}

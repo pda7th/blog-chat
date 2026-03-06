@@ -3,6 +3,8 @@
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useSession } from '@/lib/auth-client';
 import { CATEGORY_EMOJI, POST_CATEGORIES, type PostCategory } from '@/lib/constants';
+import LogoutButton from '@/components/auth/LogoutButton';
+import NavItem from './NavItem';
 
 export default function NavBar() {
   const router = useRouter();
@@ -13,52 +15,59 @@ export default function NavBar() {
   const initial = session?.user?.name?.charAt(0) ?? '?';
 
   const handleCategoryClick = (category: PostCategory) => {
-    if (category === '전체') {
-      router.push('/home');
-    } else {
-      router.push(`/home?category=${encodeURIComponent(category)}`);
-    }
+    if (category === '전체') router.push('/home');
+    else router.push(`/home?category=${encodeURIComponent(category)}`);
   };
 
   return (
-    <nav className="flex items-center justify-between h-[67px] px-8 bg-white border-b border-gray-100">
-      {/* 로고 */}
-      <div className="flex items-center gap-1 min-w-[120px]">
-        <span className="text-[18px] font-black text-green-500 tracking-tight">싹심기</span>
-        <span className="text-base">🌱</span>
+    <nav className="flex items-center gap-18pxr border-b border-gray-100 bg-white py-35pxr">
+      <div className="flex shrink-0 items-center gap-4pxr">
+        <span className="fonts-logo tracking-tight text-green-500">싹심기</span>
+        <span>🌱</span>
       </div>
+      <div className="flex min-w-0 flex-1 items-center justify-between">
+        {/* 카테고리 영역 */}
+        <section className="flex min-w-0 flex-1 items-center">
+          <div className="flex min-w-0 flex-1 items-center gap-8pxr overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            {POST_CATEGORIES.map((category) => (
+              <NavItem
+                key={category}
+                category={category}
+                emoji={CATEGORY_EMOJI[category]}
+                isActive={activeCategory === category}
+                onClick={() => handleCategoryClick(category)}
+              />
+            ))}
+          </div>
+        </section>
 
-      {/* 카테고리 필터 */}
-      <div className="flex items-center gap-2">
-        {POST_CATEGORIES.map((category) => {
-          const isActive = activeCategory === category;
-          const emoji = CATEGORY_EMOJI[category];
-          return (
-            <button
-              key={category}
-              onClick={() => handleCategoryClick(category)}
-              className={[
-                'flex items-center gap-1 px-4 py-2 rounded-full text-sm font-medium transition-all',
-                isActive
-                  ? 'bg-green-500 text-white'
-                  : 'bg-white border border-gray-200 text-gray-600 hover:border-green-400 hover:text-green-500',
-              ].join(' ')}
-            >
-              {emoji && <span className="text-sm leading-none">{emoji}</span>}
-              <span>{category}</span>
-            </button>
-          );
-        })}
+        <section className="flex shrink-0 items-center"></section>
       </div>
-
       {/* 우측: 출석 버튼 + 아바타 */}
-      <div className="flex items-center gap-3 min-w-[120px] justify-end">
-        <button className="px-4 py-2 rounded-full border border-green-400 text-green-500 text-sm font-medium hover:bg-green-50 transition-colors whitespace-nowrap">
-          오늘 출석전
-        </button>
-        <div className="w-9 h-9 rounded-full bg-green-500 flex items-center justify-center text-white text-sm font-bold shrink-0">
-          {initial}
-        </div>
+      <div className="flex min-w-[120px] items-center justify-end gap-3">
+        {session ? (
+          // 1. 로그인 상태인 경우: 로그아웃 버튼 + 프로필 이미지
+          <>
+            <LogoutButton />
+            <button
+              onClick={() => router.push('/mypage')}
+              className="relative h-9 w-9 shrink-0 overflow-hidden rounded-full border border-gray-100 bg-gray-50 transition-all hover:ring-2 hover:ring-green-400 active:scale-95"
+            >
+              <img
+                src={session.user.image || 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'}
+                alt="My Page"
+                className="h-full w-full object-cover"
+              />
+            </button>
+          </>
+        ) : (
+          // 2. 로그인하지 않은 경우: 로그인 버튼 표시
+          <button
+            onClick={() => router.push('/login')}
+            className="rounded-full border border-green-500 px-4 py-2 text-sm font-medium text-green-500 transition-colors hover:bg-green-50">
+            로그인
+          </button>
+        )}
       </div>
     </nav>
   );

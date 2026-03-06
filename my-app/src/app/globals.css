@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap');
 
 @import 'tailwindcss';
+@config '../../tailwind.config.ts';
 
 @layer base {
   * {
@@ -53,11 +54,98 @@
 }
 
 /* fonts */
-.fonts-navBar {
-  color: #495057;
-  font-family: 'Noto Sans KR';
-  font-size: 0.9375rem;
-  font-style: normal;
-  font-weight: 700;
-  line-height: 1.40625rem; /* 150% */
+@layer components {
+  .fonts-navBar {
+    text-align: center;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 20px; /* 142.857% */
+  }
+
+  .fonts-logo {
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 32px; /* 133.333% */
+    letter-spacing: -0.6px;
+  }
+
+  .fonts-mainBtn {
+    text-align: center;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 20px; /* 142.857% */
+  }
+
+  .fonts-postTitle {
+    color: #212529;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 28px; /* 155.556% */
+  }
+
+  .fonts-postSubtitle {
+    font-size: 11px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 16.5px; /* 150% */
+  }
+
+  .fonts-postContent {
+    color: #495057;
+    font-size: 13.9px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 22.75px; /* 163.669% */
+  }
+
+  .fonts-editorTitle {
+    font-size: 30px; /* text-3xl */
+    font-weight: 700;
+    line-height: 36px; /* leading-9 */
+  }
+
+  .fonts-editorContent {
+    font-size: 18px; /* text-lg */
+    font-weight: 500;
+    line-height: 28px; /* leading-7 */
+  }
+
+  .fonts-chipActive {
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 16px;
+    color: #ffffff;
+  }
+
+  .fonts-chipInactive {
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 16px;
+    color: #a3a3a3; /* neutral-400 */
+  }
+
+  .fonts-categoryBadge {
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 16px;
+    color: #52525b; /* zinc-600 */
+  }
+
+  .fonts-btnDisabled {
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 24px; /* leading-6 */
+    color: #868e96;
+  }
+
+  .fonts-btnPrimary {
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 24px;
+    color: #ffffff;
+  }
 }
