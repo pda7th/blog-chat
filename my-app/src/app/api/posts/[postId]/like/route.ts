@@ -20,7 +20,7 @@ export async function POST(_req: NextRequest, { params }: Params) {
 
     const { postId } = await params;
     const id = Number(postId);
-    const userId = 'test-user-id'; // 나중에 session.user.id 로 교체
+    const userId = session.user.id;
 
     const [existing] = await db
       .select()
