@@ -26,9 +26,6 @@ export type CreatePostInput = {
   title: string;
   content: string;
   category: string;
-  image1?: string | null;
-  image2?: string | null;
-  image3?: string | null;
 };
 
 export type UpdatePostInput = CreatePostInput;
