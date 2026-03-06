@@ -7,11 +7,11 @@ export default function CommonLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <main className="px-50pxr">
+    <main>
       <Suspense>
         <NavBar />
       </Suspense>
-      <div className="children-container flex">
+      <div className="children-container flex px-50pxr">
         <div className="flex-1 overflow-y-auto">{children}</div>
       </div>
     </main>

@@ -18,11 +18,8 @@ export default function NavBar() {
   };
 
   return (
-    <nav className="flex items-center gap-18pxr border-b border-gray-100 bg-white/95 py-20pxr shadow-sm backdrop-blur-sm">
-      <button
-        onClick={() => router.push('/home')}
-        className="flex shrink-0 items-center gap-6pxr"
-      >
+    <nav className="flex items-center gap-18pxr border-b border-gray-100 bg-white/95 px-50pxr py-20pxr shadow-sm backdrop-blur-sm">
+      <button onClick={() => router.push('/home')} className="flex shrink-0 items-center gap-6pxr">
         <span className="fonts-logo tracking-tight text-[#00C471]">싹심기</span>
         <span className="flex h-6 w-6 items-center justify-center rounded-full bg-green-50 text-xs">🌱</span>
       </button>
@@ -52,10 +49,12 @@ export default function NavBar() {
             <LogoutButton />
             <button
               onClick={() => router.push('/mypage')}
-              className="relative h-9 w-9 shrink-0 overflow-hidden rounded-full border-2 border-gray-100 bg-gray-50 shadow-sm transition-all duration-200 hover:border-green-300 hover:ring-2 hover:ring-green-400/30 active:scale-95"
-            >
+              className="relative h-9 w-9 shrink-0 overflow-hidden rounded-full border-2 border-gray-100 bg-gray-50 shadow-sm transition-all duration-200 hover:border-green-300 hover:ring-2 hover:ring-green-400/30 active:scale-95">
               <img
-                src={session.user.image || 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'}
+                src={
+                  session.user.image ||
+                  'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'
+                }
                 alt="My Page"
                 className="h-full w-full object-cover"
               />
