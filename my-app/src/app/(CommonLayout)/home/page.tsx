@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import MainBtn from '@/components/common/MainBtn';
 import PostCard from '@/components/home/PostCard';
@@ -12,12 +12,55 @@ export default function HomePage() {
   const searchParams = useSearchParams();
   const category = (searchParams.get('category') ?? '전체') as PostCategory;
   const [posts, setPosts] = useState<PostSummary[]>([]);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const observerRef = useRef<IntersectionObserver | null>(null);
+  const bottomRef = useRef<HTMLDivElement | null>(null);
+
+  // 카테고리 바뀌면 초기화
+  useEffect(() => {
+    setPosts([]);
+    setPage(1);
+    setHasMore(true);
+  }, [category]);
+
+  const loadPosts = useCallback(
+    async (currentPage: number) => {
+      if (isLoading || !hasMore) return;
+      setIsLoading(true);
+      try {
+        const data = await fetchPosts({ category, page: currentPage, pageSize: 10 });
+        setPosts((prev) => (currentPage === 1 ? data.items : [...prev, ...data.items]));
+        setHasMore(data.items.length === 10); // 여기 수정
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [category, isLoading, hasMore],
+  );
 
   useEffect(() => {
-    fetchPosts({ category })
-      .then((data) => setPosts(data.items))
-      .catch(console.error);
-  }, [category]);
+    loadPosts(page);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page, category]);
+
+  // IntersectionObserver 설정
+  useEffect(() => {
+    if (observerRef.current) observerRef.current.disconnect();
+
+    observerRef.current = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting && hasMore && !isLoading) {
+        setPage((prev) => prev + 1);
+      }
+    });
+
+    if (bottomRef.current) observerRef.current.observe(bottomRef.current);
+
+    return () => observerRef.current?.disconnect();
+  }, [hasMore, isLoading]);
 
   return (
     <main className="flex flex-col gap-32pxr py-32pxr">
@@ -43,6 +86,10 @@ export default function HomePage() {
           />
         </div>
       ))}
+
+      {isLoading && <p className="text-center text-sm text-gray-400">불러오는 중...</p>}
+
+      <div ref={bottomRef} className="h-1" />
     </main>
   );
 }
