@@ -22,6 +22,7 @@ export default function PostDetailPage() {
       .then((data) => {
         setPost(data);
         setLikeCount(data.likeCount);
+        setLiked(data.liked);
       })
       .catch(console.error);
   }, [postId]);

@@ -13,6 +13,7 @@ export type PostSummary = {
   userId: string;
   likeCount: number;
   commentCount: number;
+  liked: boolean;
 };
 
 export type PostDetail = PostSummary & {

@@ -19,6 +19,9 @@ export async function GET(req: NextRequest) {
         ? and(eq(post.status, 'ACTIVE'), eq(post.category, category))
         : eq(post.status, 'ACTIVE');
 
+    const session = await auth.api.getSession({ headers: await headers() });
+    const currentUserId = session?.user?.id ?? null;
+
     const [posts, [{ total }]] = await Promise.all([
       db
         .select({
@@ -52,7 +55,7 @@ export async function GET(req: NextRequest) {
 
     const postIds = posts.map((p) => p.postId);
 
-    const [likeCounts, commentCounts] = await Promise.all([
+    const [likeCounts, commentCounts, userLikes] = await Promise.all([
       db
         .select({ postId: postLikes.postId, cnt: count() })
         .from(postLikes)
@@ -63,15 +66,29 @@ export async function GET(req: NextRequest) {
         .from(comment)
         .where(and(inArray(comment.postId, postIds), eq(comment.status, 'ACTIVE')))
         .groupBy(comment.postId),
+      currentUserId
+        ? db
+            .select({ postId: postLikes.postId })
+            .from(postLikes)
+            .where(
+              and(
+                inArray(postLikes.postId, postIds),
+                eq(postLikes.userId, currentUserId),
+                eq(postLikes.status, 'ACTIVE'),
+              ),
+            )
+        : Promise.resolve([]),
     ]);
 
     const likeMap = Object.fromEntries(likeCounts.map((l) => [l.postId, l.cnt]));
     const commentMap = Object.fromEntries(commentCounts.map((c) => [c.postId, c.cnt]));
+    const likedSet = new Set(userLikes.map((l) => l.postId));
 
     const items = posts.map((p) => ({
       ...p,
       likeCount: likeMap[p.postId] ?? 0,
       commentCount: commentMap[p.postId] ?? 0,
+      liked: likedSet.has(p.postId),
     }));
 
     return NextResponse.json({

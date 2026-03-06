@@ -9,7 +9,7 @@ import { headers } from 'next/headers';
 
 type Params = { params: Promise<{ postId: string }> };
 
-export async function GET(_req: NextRequest, { params }: Params) {
+export async function GET(req: NextRequest, { params }: Params) {
   try {
     const { postId } = await params;
     const id = Number(postId);
@@ -18,6 +18,9 @@ export async function GET(_req: NextRequest, { params }: Params) {
         status: 400,
       });
     }
+
+    const session = await auth.api.getSession({ headers: await headers() });
+    const currentUserId = session?.user?.id ?? null;
 
     const [found] = await db
       .select({
@@ -46,7 +49,7 @@ export async function GET(_req: NextRequest, { params }: Params) {
       );
     }
 
-    const [[{ likeCount }], [{ commentCount }]] = await Promise.all([
+    const [[{ likeCount }], [{ commentCount }], userLike] = await Promise.all([
       db
         .select({ likeCount: count() })
         .from(postLikes)
@@ -55,12 +58,20 @@ export async function GET(_req: NextRequest, { params }: Params) {
         .select({ commentCount: count() })
         .from(comment)
         .where(and(eq(comment.postId, id), eq(comment.status, 'ACTIVE'))),
+      currentUserId
+        ? db
+            .select()
+            .from(postLikes)
+            .where(and(eq(postLikes.postId, id), eq(postLikes.userId, currentUserId), eq(postLikes.status, 'ACTIVE')))
+        : Promise.resolve([]),
     ]);
+
+    const liked = userLike.length > 0;
 
     return NextResponse.json({
       success: true,
-      data: { ...found, likeCount, commentCount },
-    } satisfies ApiEnvelope<typeof found & { likeCount: number; commentCount: number }>);
+      data: { ...found, likeCount, commentCount, liked },
+    } satisfies ApiEnvelope<typeof found & { likeCount: number; commentCount: number; liked: boolean }>);
   } catch (err) {
     console.error('[GET /api/posts/[postId]]', err);
     return NextResponse.json({ success: false, error: { message: '게시글 조회 실패' } } satisfies ApiEnvelope<never>, {

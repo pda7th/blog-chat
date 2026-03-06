@@ -17,7 +17,7 @@ export default function HomePage() {
     fetchPosts({ category })
       .then((data) => setPosts(data.items))
       .catch(console.error);
-  }, [category]); // category 바뀔 때마다 재조회
+  }, [category]);
 
   return (
     <main className="flex flex-col gap-32pxr py-32pxr">
@@ -33,11 +33,13 @@ export default function HomePage() {
       {posts.map((post) => (
         <div key={post.postId} onClick={() => router.push(`/home/${post.postId}`)} className="cursor-pointer">
           <PostCard
+            postId={post.postId}
             subtitle={post.category}
             title={post.title}
             content={post.content}
             commentCount={post.commentCount}
             likeCount={post.likeCount}
+            liked={post.liked}
           />
         </div>
       ))}
