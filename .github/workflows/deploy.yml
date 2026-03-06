@@ -47,6 +47,8 @@ jobs:
           tags: |
             ${{ env.DOCKER_IMAGE }}:latest
             ${{ env.DOCKER_IMAGE }}:sha-${{ github.sha }}
+          build-args: |
+            NEXT_PUBLIC_API_URL=${{ secrets.BETTER_AUTH_URL }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
