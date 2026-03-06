@@ -27,10 +27,10 @@ export default function ChatMessage({ message, isMe }: Props) {
 
   if (isMe) {
     return (
-      <div className="flex justify-end gap-2 px-4 py-1">
-        <div className="flex flex-col items-end gap-1 max-w-[70%]">
+      <div className="flex justify-end gap-2 px-4 py-1.5">
+        <div className="flex flex-col items-end gap-1 max-w-[72%]">
           <span className="text-[10px] text-gray-400">{time}</span>
-          <div className="bg-green-500 text-white text-sm px-3 py-2 rounded-2xl rounded-tr-sm wrap-break-words">
+          <div className="break-words rounded-2xl rounded-tr-sm bg-[#00C471] px-3.5 py-2 text-sm text-white shadow-sm">
             {message.content}
           </div>
         </div>
@@ -39,8 +39,8 @@ export default function ChatMessage({ message, isMe }: Props) {
   }
 
   return (
-    <div className="flex items-start gap-2 px-4 py-1">
-      <div className="relative w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center text-white text-xs font-bold shrink-0 overflow-hidden">
+    <div className="flex items-start gap-2 px-4 py-1.5">
+      <div className="relative flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-full bg-green-100 text-xs font-bold text-green-700 ring-1 ring-green-100">
         {message.image ? (
           <Image
             src={message.image}
@@ -52,13 +52,13 @@ export default function ChatMessage({ message, isMe }: Props) {
           initial
         )}
       </div>
-      <div className="flex flex-col gap-1 max-w-[70%]">
-        <span className="text-xs text-gray-500 font-medium">{message.nickname ?? '익명'}</span>
+      <div className="flex flex-col gap-1 max-w-[72%]">
+        <span className="text-[11px] font-semibold text-gray-500">{message.nickname ?? '익명'}</span>
         <div className="flex items-end gap-1">
-          <div className="bg-white border border-gray-200 text-gray-800 text-sm px-3 py-2 rounded-2xl rounded-tl-sm wrap-break-word">
+          <div className="break-words rounded-2xl rounded-tl-sm border border-gray-100 bg-gray-50 px-3.5 py-2 text-sm text-gray-800 shadow-sm">
             {message.content}
           </div>
-          <span className="text-[10px] text-gray-400 shrink-0">{time}</span>
+          <span className="shrink-0 text-[10px] text-gray-400">{time}</span>
         </div>
       </div>
     </div>

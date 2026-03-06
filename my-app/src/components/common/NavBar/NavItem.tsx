@@ -5,10 +5,10 @@ export default function NavItem({ category, isActive, emoji, onClick }: NavItemP
     <button
       onClick={onClick}
       className={[
-        'fonts-navBar flex items-center gap-4pxr rounded-full px-16pxr py-8pxr transition-all',
+        'fonts-navBar flex items-center gap-4pxr rounded-full px-14pxr py-7pxr transition-all duration-200 whitespace-nowrap',
         isActive
-          ? 'bg-green-500 text-white'
-          : 'border border-gray-200 bg-white text-gray-600 hover:border-green-400 hover:text-green-500',
+          ? 'bg-[#00C471] text-white shadow-sm shadow-green-200'
+          : 'border border-gray-200 bg-white text-gray-500 hover:border-green-300 hover:text-[#00C471] hover:bg-green-50',
       ].join(' ')}>
       {emoji && <span className="leading-none">{emoji}</span>}
       <span>{category}</span>

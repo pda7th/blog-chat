@@ -42,7 +42,7 @@ export default function LogInForm() {
                 <input
                     required
                     type="email"
-                    className="rounded-lg border border-gray-200 p-3 outline-none focus:ring-2 focus:ring-blue-400"
+                    className="rounded-xl border border-gray-200 bg-gray-50/50 p-3 text-sm outline-none transition-all duration-150 focus:ring-2 focus:ring-green-400/40 focus:border-green-400"
                     placeholder="hello@example.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
@@ -54,7 +54,7 @@ export default function LogInForm() {
                 <input
                     required
                     type="password"
-                    className="rounded-lg border border-gray-200 p-3 outline-none focus:ring-2 focus:ring-blue-400"
+                    className="rounded-xl border border-gray-200 bg-gray-50/50 p-3 text-sm outline-none transition-all duration-150 focus:ring-2 focus:ring-green-400/40 focus:border-green-400"
                     placeholder="비밀번호를 입력하세요"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
@@ -63,7 +63,7 @@ export default function LogInForm() {
 
             <button
                 disabled={loading}
-                className="mt-2 rounded-xl bg-green-500 py-3 font-bold text-white transition-all hover:bg-green-600 active:scale-95 disabled:bg-gray-300"
+                className="mt-2 rounded-xl bg-[#00C471] py-3 font-bold text-white shadow-sm transition-all duration-150 hover:bg-green-600 active:scale-95 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400"
             >
                 {loading ? '로그인 중...' : '로그인'}
             </button>

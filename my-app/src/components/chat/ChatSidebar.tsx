@@ -45,9 +45,10 @@ export default function ChatSidebar() {
   };
 
   return (
-    <aside className="flex flex-col w-[320px] h-full border-l border-gray-100 bg-gray-50">
-      <div className="px-4 py-3 border-b border-gray-100 bg-white">
-        <h2 className="text-sm font-semibold text-gray-700">실시간 채팅</h2>
+    <aside className="flex flex-col w-[300px] h-full overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm">
+      <div className="flex items-center gap-2 border-b border-gray-100 bg-gradient-to-r from-green-50 to-emerald-50 px-4 py-3">
+        <div className="h-2 w-2 rounded-full bg-[#00C471] shadow-sm" />
+        <h2 className="text-sm font-bold text-gray-700">실시간 채팅</h2>
       </div>
 
       <ChatMessageList messages={messages} currentUserId={currentUserId} />

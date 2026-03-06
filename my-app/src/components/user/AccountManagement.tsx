@@ -25,22 +25,27 @@ export default function AccountManagement() {
     };
 
     return (
-        <div className="w-full md:w-[320px] bg-[#F9F9F9] rounded-[24px] p-10 flex flex-col gap-6">
-            <h3 className="text-[19px] font-bold text-[#333333]">계정 관리</h3>
+        <div className="flex w-full flex-col gap-6 rounded-2xl border border-gray-100 bg-white p-8 shadow-sm md:w-[320px]">
+            <div className="flex items-center gap-2">
+                <div className="h-4 w-1 rounded-full bg-[#00C471]" />
+                <h3 className="text-[17px] font-bold text-[#333333]">계정 관리</h3>
+            </div>
 
-            <div className="flex flex-col gap-5 text-[15px] font-semibold text-[#888888]">
+            <div className="flex flex-col gap-1">
                 <button
                     onClick={() => router.push('/mypage/edit')}
-                    className="text-left hover:text-[#00B461] transition-colors"
+                    className="flex items-center justify-between rounded-xl px-4 py-3 text-[14px] font-semibold text-[#666666] transition-all duration-150 hover:bg-green-50 hover:text-[#00C471]"
                 >
-                    정보 수정
+                    <span>정보 수정</span>
+                    <span className="text-gray-300">›</span>
                 </button>
-                <div className="border-b border-gray-100/50"></div>
+                <div className="mx-4 border-b border-gray-100"></div>
                 <button
                     onClick={handleDeactivate}
-                    className="text-left text-[#FF7070] font-bold mt-2"
+                    className="flex items-center justify-between rounded-xl px-4 py-3 text-[14px] font-bold text-[#FF7070] transition-all duration-150 hover:bg-red-50"
                 >
-                    회원 탈퇴
+                    <span>회원 탈퇴</span>
+                    <span className="text-red-200">›</span>
                 </button>
             </div>
         </div>

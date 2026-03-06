@@ -11,6 +11,9 @@ export type PostSummary = {
   image3: string | null;
   createdAt: string;
   userId: string;
+  authorName: string;
+  authorNickname: string | null;
+  authorProfileImage: string | null;
   likeCount: number;
   commentCount: number;
   liked: boolean;
