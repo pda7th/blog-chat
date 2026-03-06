@@ -61,7 +61,7 @@ export default function PostDetailPage() {
           <p className="fonts-postSubtitle">{post.category}</p>
           <div className="flex gap-8pxr">
             <button
-              onClick={() => router.push(`/posts/${postId}/edit`)}
+              onClick={() => router.push(`/home/${postId}/edit`)}
               className="rounded border border-gray-200 px-12pxr py-6pxr text-sm text-gray-600 hover:bg-gray-50">
               수정
             </button>
