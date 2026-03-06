@@ -39,22 +39,30 @@ echo "MySQL is healthy."
 # 3. DB 마이그레이션 실행
 # ────────────────────────────────────────────
 echo ""
-echo "[3/5] Running DB migrations..."
+echo "[3/6] Running DB migrations..."
 docker compose -f "$COMPOSE_FILE" --profile migrate run --rm migrate
 echo "Migrations complete."
 
 # ────────────────────────────────────────────
-# 4. 전체 서비스 기동 (app, nginx 포함)
+# 4. DB 시드 실행 (채팅방 초기 데이터)
 # ────────────────────────────────────────────
 echo ""
-echo "[4/5] Starting all services..."
+echo "[4/6] Running DB seed..."
+docker compose -f "$COMPOSE_FILE" --profile seed run --rm seed
+echo "Seed complete."
+
+# ────────────────────────────────────────────
+# 5. 전체 서비스 기동 (app, nginx 포함)
+# ────────────────────────────────────────────
+echo ""
+echo "[5/6] Starting all services..."
 docker compose -f "$COMPOSE_FILE" up -d --remove-orphans
 
 # ────────────────────────────────────────────
-# 5. 오래된 이미지 정리
+# 6. 오래된 이미지 정리
 # ────────────────────────────────────────────
 echo ""
-echo "[5/5] Cleaning up dangling images..."
+echo "[6/6] Cleaning up dangling images..."
 docker image prune -f
 
 echo ""

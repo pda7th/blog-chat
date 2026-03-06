@@ -1,13 +1,13 @@
 'use client';
 
-import { useEffect, useState, useRef, useCallback } from 'react';
+import { Suspense, useEffect, useState, useRef, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import MainBtn from '@/components/common/MainBtn';
 import PostCard from '@/components/home/PostCard';
 import { fetchPosts, type PostSummary } from '@/lib/post';
 import { type PostCategory } from '@/lib/constants';
 
-export default function HomePage() {
+function HomePageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const category = (searchParams.get('category') ?? '전체') as PostCategory;
@@ -91,5 +91,13 @@ export default function HomePage() {
 
       <div ref={bottomRef} className="h-1" />
     </main>
+  );
+}
+
+export default function HomePage() {
+  return (
+    <Suspense>
+      <HomePageContent />
+    </Suspense>
   );
 }
