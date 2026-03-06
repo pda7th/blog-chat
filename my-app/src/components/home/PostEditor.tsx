@@ -12,7 +12,7 @@ import StarterKit from '@tiptap/starter-kit';
 import { TextStyle } from '@tiptap/extension-text-style';
 import { Color } from '@tiptap/extension-color';
 import FontFamily from '@tiptap/extension-font-family';
-import Image from '@tiptap/extension-image';
+import { ImageResize } from 'tiptap-extension-resize-image';
 
 type WriteCategory = Exclude<PostCategory, '전체'>;
 const WRITE_CATEGORIES = POST_CATEGORIES.filter((c) => c !== '전체') as WriteCategory[];
@@ -31,21 +31,9 @@ export default function PostEditor() {
   };
   const [category, setCategory] = useState<WriteCategory>(initialCategory);
 
-  const ResizableImage = Image.extend({
-    addAttributes() {
-      return {
-        ...this.parent?.(),
-        style: {
-          default: 'max-width: 200px; width: 100%; height: auto;',
-          renderHTML: (attributes) => ({ style: attributes.style }),
-        },
-      };
-    },
-  });
-
   const editor = useEditor({
     immediatelyRender: false,
-    extensions: [StarterKit, TextStyle, Color, FontFamily, ResizableImage],
+    extensions: [StarterKit, TextStyle, Color, FontFamily, ImageResize],
     content: '',
     editorProps: {
       attributes: {
@@ -72,8 +60,9 @@ export default function PostEditor() {
       return;
     }
 
-    editor?.chain().focus().setImage({ src: url }).run();
-    setIsHeaderOpen(false); // 이미지 추가 시 헤더 접기
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (editor?.chain().focus() as any).setImage({ src: url }).run();
+    setIsHeaderOpen(false);
   };
 
   const handleSubmit = async () => {
