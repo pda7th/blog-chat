@@ -20,7 +20,7 @@ export default function ChatMessage({ message, isMe }: Props) {
   const time = new Date(message.createdAt).toLocaleTimeString('ko-KR', {
     hour: '2-digit',
     minute: '2-digit',
-    timeZone: 'UTC',
+    timeZone: 'Asia/Seoul',
   });
 
   const initial = message.nickname?.charAt(0) ?? '?';
