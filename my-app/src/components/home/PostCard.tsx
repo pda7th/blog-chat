@@ -8,7 +8,7 @@ export default function PostCard({ subtitle, title, content, commentCount, likeC
 
       <h2 className="fonts-postTitle">{title}</h2>
 
-      <p className="fonts-postContent">{content}</p>
+      <div className="fonts-postContent" dangerouslySetInnerHTML={{ __html: content }}></div>
 
       <section className="flex gap-12pxr">
         <div className="flex items-center gap-4pxr">
