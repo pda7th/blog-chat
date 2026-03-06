@@ -67,7 +67,21 @@ jobs:
           cache-to: type=gha,mode=max
 
       # ────────────────────────────────────────────
-      # 6. SSH Agent 설정
+      # 6. Seed 이미지 빌드 & Push (seed target)
+      #    deploy.sh에서 채팅방 시드 one-off 실행에 사용
+      # ────────────────────────────────────────────
+      - name: Build and push seed image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          target: seed
+          push: true
+          tags: ${{ env.DOCKER_IMAGE }}:seed
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      # ────────────────────────────────────────────
+      # 7. SSH Agent 설정
       # ────────────────────────────────────────────
       - name: Setup SSH Agent
         uses: webfactory/ssh-agent@v0.9.0
@@ -78,7 +92,7 @@ jobs:
         run: ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
 
       # ────────────────────────────────────────────
-      # 7. Infra 파일 EC2 동기화 (rsync)
+      # 8. Infra 파일 EC2 동기화 (rsync)
       #    infra/prod/ → /srv/app/
       #    scripts/deploy.sh → /srv/app/deploy.sh
       # ────────────────────────────────────────────
@@ -97,7 +111,7 @@ jobs:
             ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/srv/app/deploy.sh
 
       # ────────────────────────────────────────────
-      # 8. .env 파일 생성 → EC2 /srv/app/.env 에 업로드
+      # 9. .env 파일 생성 → EC2 /srv/app/.env 에 업로드
       #    (로컬에서 생성 후 scp, 레포에는 절대 커밋 금지)
       # ────────────────────────────────────────────
       - name: Create .env file
@@ -139,7 +153,7 @@ jobs:
             ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/srv/app/.env
 
       # ────────────────────────────────────────────
-      # 9. deploy.sh 실행 (migrate → up -d)
+      # 10. deploy.sh 실행 (migrate → seed → up -d)
       # ────────────────────────────────────────────
       - name: Deploy
         run: |
