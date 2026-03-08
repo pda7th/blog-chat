@@ -1,6 +1,6 @@
 import { relations } from 'drizzle-orm';
 import { user, session, account } from './auth';
-import { post, postLikes, comment } from './post';
+import { post, postLikes, comment, notification } from './post';
 import { room, chat, roomParticipant } from './chat';
 
 export const userRelations = relations(user, ({ many }) => ({
@@ -11,6 +11,7 @@ export const userRelations = relations(user, ({ many }) => ({
   comments: many(comment),
   chats: many(chat),
   roomParticipants: many(roomParticipant),
+  notifications: many(notification),
 }));
 
 export const sessionRelations = relations(session, ({ one }) => ({
@@ -53,4 +54,10 @@ export const chatRelations = relations(chat, ({ one }) => ({
 export const roomParticipantRelations = relations(roomParticipant, ({ one }) => ({
   room: one(room, { fields: [roomParticipant.roomId], references: [room.roomId] }),
   user: one(user, { fields: [roomParticipant.userId], references: [user.id] }),
+}));
+
+export const notificationRelations = relations(notification, ({ one }) => ({
+  user: one(user, { fields: [notification.userId], references: [user.id] }),
+  post: one(post, { fields: [notification.postId], references: [post.postId] }),
+  comment: one(comment, { fields: [notification.commentId], references: [comment.commentId] }),
 }));

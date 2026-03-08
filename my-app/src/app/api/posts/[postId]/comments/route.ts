@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { eq } from 'drizzle-orm';
 import { auth } from '@/lib/auth';
 import { createComment, listRootComments, ServiceError } from '@/features/comments/comment.service';
+import { createNotification } from '@/features/notifications/notification.service';
+import { pushToUser } from '@/app/api/notifications/stream/route';
+import { db } from '@/db';
+import { post } from '@/db/schema';
 import type { ApiEnvelope, ApiCursorPaginationEnvelope } from '@/types/api-envelopes';
 import type { CommentDto } from '@/features/comments/comment.dto';
 
@@ -64,6 +69,22 @@ export async function POST(req: NextRequest, { params }: Params): Promise<NextRe
 
   try {
     const comment = await createComment(session.user.id, postId, content.trim(), parentId, replyToCommentId);
+
+    // 게시글 작성자에게 알림 발송 (본인 댓글 제외)
+    const [postRow] = await db.select({ userId: post.userId, title: post.title }).from(post).where(eq(post.postId, postId)).limit(1);
+    if (postRow && postRow.userId !== session.user.id) {
+      const commenterName = session.user.name ?? '익명';
+      const notif = await createNotification({
+        userId: postRow.userId,
+        postId,
+        commentId: comment.commentId,
+        postTitle: postRow.title,
+        commenterName,
+        commentPreview: content.trim().slice(0, 100),
+      });
+      pushToUser(postRow.userId, notif);
+    }
+
     return NextResponse.json({ success: true, data: comment }, { status: 201 });
   } catch (e) {
     if (e instanceof ServiceError) {
