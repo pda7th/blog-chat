@@ -4,6 +4,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useSession } from '@/lib/auth-client';
 import { CATEGORY_EMOJI, POST_CATEGORIES, type PostCategory } from '@/lib/constants';
 import LogoutButton from '@/components/auth/LogoutButton';
+import NotificationBell from '@/components/notifications/NotificationBell';
 import NavItem from './NavItem';
 
 export default function NavBar() {
@@ -46,6 +47,7 @@ export default function NavBar() {
         {session ? (
           // 1. 로그인 상태인 경우: 로그아웃 버튼 + 프로필 이미지
           <>
+            <NotificationBell />
             <LogoutButton />
             <button
               onClick={() => router.push('/mypage')}

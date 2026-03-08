@@ -29,7 +29,7 @@ export function CommentItem({ comment, postId, currentUserId, onDeleted }: Props
   }
 
   return (
-    <div className={`rounded-2xl border bg-white p-4 shadow-sm transition-all duration-150 ${isDeleted ? 'border-gray-50 bg-gray-50/50' : 'border-gray-100 hover:border-gray-200'}`}>
+    <div id={`comment-${comment.commentId}`} className={`rounded-2xl border bg-white p-4 shadow-sm transition-all duration-150 ${isDeleted ? 'border-gray-50 bg-gray-50/50' : 'border-gray-100 hover:border-gray-200'}`}>
       <div className="flex items-start justify-between gap-2">
         <div className="flex flex-1 gap-2.5">
           {comment.author.image ? (
