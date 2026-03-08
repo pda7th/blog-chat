@@ -35,6 +35,15 @@ export function CommentSection({ postId, currentUserId }: Props) {
     loadComments(null);
   }, [postId]);
 
+  // URL 해시(#comment-{id})로 진입 시 해당 댓글로 스크롤
+  useEffect(() => {
+    if (loading || comments.length === 0) return;
+    const hash = window.location.hash;
+    if (!hash.startsWith('#comment-')) return;
+    const el = document.getElementById(hash.slice(1));
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, [comments, loading]);
+
   function handleCommentAdded(newComment: CommentDto) {
     setComments((prev) => [newComment, ...prev]);
   }

@@ -1,5 +1,5 @@
 import type { AnyMySqlColumn } from 'drizzle-orm/mysql-core';
-import { bigint, index, mysqlTable, text, unique, varchar } from 'drizzle-orm/mysql-core';
+import { bigint, boolean, index, mysqlTable, text, timestamp, unique, varchar } from 'drizzle-orm/mysql-core';
 import { auditColumns } from './common';
 import { user } from './auth';
 
@@ -67,5 +67,30 @@ export const comment = mysqlTable(
     postIdx: index('idx_comment_post_id').on(t.postId),
     parentIdx: index('idx_comment_parent_id').on(t.parentId),
     replyToIdx: index('idx_comment_reply_to_comment_id').on(t.replyToCommentId),
+  }),
+);
+
+export const notification = mysqlTable(
+  'notification',
+  {
+    notificationId: bigint('notification_id', { mode: 'number', unsigned: true }).autoincrement().notNull().primaryKey(),
+    userId: varchar('user_id', { length: 36 })
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    postId: bigint('post_id', { mode: 'number', unsigned: true })
+      .notNull()
+      .references(() => post.postId, { onDelete: 'cascade' }),
+    commentId: bigint('comment_id', { mode: 'number', unsigned: true })
+      .notNull()
+      .references((): AnyMySqlColumn => comment.commentId, { onDelete: 'cascade' }),
+    postTitle: varchar('post_title', { length: 200 }).notNull(),
+    commenterName: varchar('commenter_name', { length: 100 }).notNull(),
+    commentPreview: varchar('comment_preview', { length: 100 }).notNull(),
+    isRead: boolean('is_read').notNull().default(false),
+    createdAt: timestamp('created_at', { mode: 'date' }).notNull().defaultNow(),
+  },
+  (t) => ({
+    userIdx: index('idx_notification_user_id').on(t.userId),
+    isReadIdx: index('idx_notification_is_read').on(t.isRead),
   }),
 );

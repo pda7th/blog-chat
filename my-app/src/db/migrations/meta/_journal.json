@@ -15,6 +15,13 @@
       "when": 1772672878932,
       "tag": "0001_orange_the_fallen",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1772786256378,
+      "tag": "0002_needy_peter_parker",
+      "breakpoints": true
     }
   ]
 }
