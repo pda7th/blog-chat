@@ -42,9 +42,7 @@ export default function NotificationBell() {
       fetchNotifications();
     };
 
-    eventSource.onerror = () => {
-      eventSource.close();
-    };
+    // onerror 시 close() 호출하지 않으면 EventSource가 자동 재연결함
 
     return () => eventSource.close();
   }, []);
@@ -75,7 +73,7 @@ export default function NotificationBell() {
   }
 
   return (
-    <div ref={dropdownRef} className="relative">
+    <div ref={dropdownRef} className="relative z-50">
       <button
         onClick={handleOpen}
         className="relative flex h-9 w-9 items-center justify-center rounded-full border-2 border-gray-100 bg-gray-50 shadow-sm transition-all duration-200 hover:border-green-300 hover:ring-2 hover:ring-green-400/30 active:scale-95"
@@ -97,7 +95,7 @@ export default function NotificationBell() {
 
       {/* 드롭다운 */}
       {open && (
-        <div className="absolute right-0 top-11 z-50 w-72 rounded-2xl border border-gray-100 bg-white shadow-lg">
+        <div className="absolute right-0 top-11 z-[200] w-72 rounded-2xl border border-gray-100 bg-white shadow-lg">
           <div className="border-b border-gray-100 px-4 py-3">
             <span className="text-sm font-bold text-gray-700">알림</span>
           </div>
