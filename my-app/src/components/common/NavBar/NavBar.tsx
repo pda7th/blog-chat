@@ -19,7 +19,7 @@ export default function NavBar() {
   };
 
   return (
-    <nav className="flex items-center gap-18pxr border-b border-gray-100 bg-white/95 px-50pxr py-20pxr shadow-sm backdrop-blur-sm">
+    <nav className="relative z-50 flex items-center gap-18pxr border-b border-gray-100 bg-white/95 px-50pxr py-20pxr shadow-sm backdrop-blur-sm">
       <button onClick={() => router.push('/home')} className="flex shrink-0 items-center gap-6pxr">
         <span className="fonts-logo tracking-tight text-[#00C471]">싹심기</span>
         <span className="flex h-6 w-6 items-center justify-center rounded-full bg-green-50 text-xs">🌱</span>
